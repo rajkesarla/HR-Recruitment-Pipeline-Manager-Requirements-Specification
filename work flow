@@ -1,0 +1,37 @@
+Suggested Development Plan (Phases)
+🔹 Phase 1: Core Functionality (US 01–US 03)
+Build the foundation first:
+
+✅ US 01: Job Posting (already implemented earlier)
+
+✅ US 02: Candidate Application (file upload, form submission, email)
+
+✅ US 03: HR Manager Dashboard (filter, search, view applications)
+
+🔹 Phase 2: Interview & Feedback Management (US 04–US 05)
+US 04: Scheduling with calendar APIs (e.g., Google Calendar)
+
+US 05: Feedback forms + rating logic
+
+🔹 Phase 3: Security & Access (US 06–US 07)
+US 06: Role-based access control (Spring Security + JWT)
+
+US 07: Candidate tracking stages (Kanban-style UI)
+
+🔹 Phase 4: Communication & Reporting (US 08–US 10)
+US 08: Custom email templates
+
+US 09: Candidate status notifications
+
+US 10: Interview panels
+
+🔹 Phase 5: Compliance, Onboarding & Talent Pools (US 11–US 15)
+US 11: GDPR, retention logic, encryption
+
+US 12: Interview feedback for rejected candidates
+
+US 13: Onboarding document management
+
+US 14: Usage reporting (admin-level)
+
+US 15: Talent pool with tagging and LinkedIn integration
