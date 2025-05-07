@@ -1,0 +1,250 @@
+1. users Table
+Purpose:
+This table stores the information of all users in the system, including HR professionals, managers, recruiters, administrators, and candidates.
+
+Column Breakdown:
+user_id: Primary Key. A unique identifier for each user.
+
+username, email: Uniquely identify a user for login and communication.
+
+password_hash: Securely stores password (hashed).
+
+full_name: The user's complete name.
+
+role: Defines what the user can do (e.g., RECRUITER, CANDIDATE, ADMIN). Used for role-based access control.
+
+status: Whether the user account is active or not.
+
+mfa_enabled: Indicates if multi-factor authentication is turned on for the user.
+
+created_at: Timestamp when the user was registered.
+
+Foreign Key Usage:
+This table is referenced by many other tables (e.g., job postings, applications, etc.) to identify who performed an action or who owns a record.
+
+2. job_postings Table
+Purpose:
+Stores all job listings created by recruiters or managers.
+
+Column Breakdown:
+job_id: Primary Key. Unique ID for the job posting.
+
+title, description, requirements, responsibilities: Full job listing details.
+
+location, department, employment_type: Helps candidates filter job listings.
+
+status: Indicates if the job is open (ACTIVE) or closed (INACTIVE).
+
+created_by: Foreign Key referencing users(user_id) — identifies which HR recruiter created the job posting.
+
+created_at: Time of posting.
+
+Why Foreign Key:
+created_by ensures traceability — we know which user posted the job.
+
+3. candidates Table
+Purpose:
+Holds candidate-specific information and links to their uploaded resume and cover letter.
+
+Column Breakdown:
+candidate_id: Primary Key.
+
+user_id: Foreign Key referencing users(user_id). Each candidate is a user but has additional data stored here.
+
+resume_url, cover_letter_url: URLs to uploaded documents.
+
+created_at: When candidate record was created.
+
+Why Foreign Key:
+Each candidate is a user but has extra details (resume, etc.). user_id ties back to general user info.
+
+4. applications Table
+Purpose:
+Tracks job applications submitted by candidates for job postings.
+
+Column Breakdown:
+application_id: Primary Key.
+
+candidate_id: Foreign Key to candidates(candidate_id) — the applicant.
+
+job_id: Foreign Key to job_postings(job_id) — the job applied for.
+
+status: Application progress (e.g., APPLIED, OFFERED, HIRED).
+
+applied_at, last_updated: Timestamps.
+
+Why Foreign Keys:
+Links the application to a specific candidate and a specific job, enabling tracking.
+
+5. interviews Table
+Purpose:
+Stores interview schedules and details.
+
+Column Breakdown:
+interview_id: Primary Key.
+
+application_id: Foreign Key to applications(application_id) — which application the interview is for.
+
+interview_datetime: When the interview is scheduled.
+
+interview_type: Format (e.g., phone, video).
+
+location_or_link: Meeting location or video link.
+
+status: Current status (e.g., scheduled, completed).
+
+created_at: Timestamp.
+
+Why Foreign Key:
+Connects the interview to a specific application to trace which candidate's interview is being handled.
+
+6. interviewers Table
+Purpose:
+Handles the many-to-many relationship between interviews and interviewers.
+
+Column Breakdown:
+interview_id: Foreign Key to interviews(interview_id)
+
+interviewer_id: Foreign Key to users(user_id)
+
+Why Foreign Keys:
+Allows multiple interviewers per interview, and interviewers to participate in multiple interviews.
+
+7. interview_feedback Table
+Purpose:
+Stores feedback given by interviewers after a candidate interview.
+
+Column Breakdown:
+feedback_id: Primary Key.
+
+interview_id: Foreign Key to interviews(interview_id) — which interview the feedback relates to.
+
+reviewer_id: Foreign Key to users(user_id) — the interviewer providing feedback.
+
+rating: Score between 1 and 5.
+
+comments: Written feedback.
+
+submitted_at: Timestamp.
+
+Why Foreign Keys:
+Ensures that each feedback is tied to the right interview and correct reviewer.
+
+8. candidate_notes Table
+Purpose:
+Allows HR team members to attach internal notes about a candidate.
+
+Column Breakdown:
+note_id: Primary Key.
+
+candidate_id: Foreign Key to candidates(candidate_id)
+
+added_by: Foreign Key to users(user_id) — the staff who wrote the note.
+
+note: Text of the note.
+
+added_at: Timestamp.
+
+Why Foreign Keys:
+Links each note to a specific candidate, and tracks who added it.
+
+9. email_templates Table
+Purpose:
+Manages customizable email templates used in different recruitment stages.
+
+Column Breakdown:
+template_id: Primary Key.
+
+name, type: Identify and categorize the template (e.g., interview invite, status update).
+
+subject, body: Email content.
+
+created_by: Foreign Key to users(user_id) — who created the template.
+
+created_at: Timestamp.
+
+Why Foreign Key:
+Enables tracking who created each email template for audit and editing.
+
+10. onboarding_documents Table
+Purpose:
+Handles digital documents collected during onboarding after hiring.
+
+Column Breakdown:
+document_id: Primary Key.
+
+candidate_id: Foreign Key to candidates(candidate_id) — who the document belongs to.
+
+document_name, document_url: Details of the uploaded document.
+
+signed: Indicates if document is signed.
+
+uploaded_at: Timestamp.
+
+Why Foreign Key:
+Ties the document to a specific candidate’s onboarding process.
+
+11. audit_log Table
+Purpose:
+Tracks system actions for security and auditing.
+
+Column Breakdown:
+log_id: Primary Key.
+
+user_id: Foreign Key to users(user_id) — who performed the action.
+
+action_type, description: What was done.
+
+action_time: Timestamp.
+
+Why Foreign Key:
+Allows you to audit actions back to the specific user who performed them.
+
+12. talent_pool Table
+Purpose:
+Manages passive candidates stored for future opportunities.
+
+Column Breakdown:
+pool_id: Primary Key.
+
+candidate_id: Foreign Key to candidates(candidate_id)
+
+tags: Skills, roles, or keywords.
+
+source: Where the candidate was found (LinkedIn, referral, etc.).
+
+reengagement_status: Whether contact has been re-established.
+
+last_contacted_at: Timestamp.
+
+Why Foreign Key:
+Ties the talent pool record to a real candidate.
+
+13. application_status_history Table
+Purpose:
+Maintains a historical log of status changes for applications.
+
+Column Breakdown:
+history_id: Primary Key.
+
+application_id: Foreign Key to applications(application_id)
+
+previous_status, new_status: What changed.
+
+changed_at: When the change happened.
+
+changed_by: Foreign Key to users(user_id) — who made the change.
+
+Why Foreign Keys:
+Tracks who changed what, and which application it was.
+
+Summary of Foreign Key Usage:
+Foreign keys are used to:
+
+Preserve data relationships (e.g., candidate → user, application → job + candidate).
+
+Ensure data integrity (e.g., feedback must relate to real interview).
+
+Enable traceability and auditing (e.g., who created a job post, who changed status).
+
+Implement business logic (e.g., only assigned interviewers give feedback).
