@@ -248,3 +248,86 @@ Ensure data integrity (e.g., feedback must relate to real interview).
 Enable traceability and auditing (e.g., who created a job post, who changed status).
 
 Implement business logic (e.g., only assigned interviewers give feedback).
+
+=============================================================================================================================================================================
+-- ===================
+-- APPLICATIONS TABLE
+-- ===================
+CREATE TABLE applications (
+    application_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id BIGINT NOT NULL,
+    job_id BIGINT NOT NULL,
+    status ENUM('APPLIED', 'REVIEWED', 'INTERVIEW_SCHEDULED', 'INTERVIEWED', 'OFFERED', 'REJECTED', 'HIRED', 'WITHDRAWN') NOT NULL DEFAULT 'APPLIED',
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
+    -- Enforce one application per candidate per job
+    UNIQUE (candidate_id, job_id),
+    
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES job_postings(job_id)
+);
+✅ A candidate can apply to many different jobs.
+
+✅ A job can receive applications from many different candidates.
+
+❌ But a candidate cannot apply to the same job more than once — any duplicate attempt will raise a constraint violation.
+
+
+1. Separation of Concerns / Role-Specific Extension
+users is a general table for all kinds of users: recruiters, admins, managers, candidates, etc.
+
+candidates is a specialized table for users who are applying for jobs.
+
+This follows a common database pattern where a base users table is extended by role-specific tables (candidates, employees, etc.) to store additional role-related data.
+
+Example:
+
+user_id = 42 could be an admin or a recruiter and would not exist in the candidates table.
+
+But if user_id = 55 is a candidate, it will appear in both users and candidates, with the candidates table storing their resume, cover letter, and other application-specific info.
+
+✅ 2. Candidate-Specific Attributes
+The candidates table might store data only relevant to candidates, like:
+
+resume_url
+
+cover_letter_url
+
+application history
+
+onboarding documents
+
+interview tracking, etc.
+
+These fields don’t belong in the users table, since non-candidate users wouldn’t need them.
+
+✅ 3. One-to-One Mapping with Flexibility
+sql
+Copy
+Edit
+user_id BIGINT UNIQUE
+This means every candidate is a user, but not every user is a candidate.
+
+It gives you flexibility to add new roles or tables later, like employees, without polluting a single large users table.
+
+✅ 4. Clean Foreign Key Relationships
+Downstream tables like applications, interviews, onboarding_documents, etc., refer to candidate_id because those actions are candidate-specific.
+
+Using candidate_id keeps queries clear and semantically correct.
+
+Analogy:
+Think of it like this:
+
+users = everyone in your system
+
+candidates = only people who apply for jobs
+
+employees = only people who got hired
+
+Each group has a different set of data relevant to them.
+
+
+
+
+
