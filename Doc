@@ -1,0 +1,598 @@
+## ✅ **US01 – HR posts job openings**
+
+**Tables Involved:** `job_postings`, `users`
+
+### 📌 Example Scenario:
+
+An HR recruiter (user\_id: 101) logs in and creates a job for **Software Engineer** in the **IT department**, with a full-time contract.
+
+### 💾 Table Usage:
+
+* `job_postings` stores:
+
+  * `title`: "Software Engineer"
+  * `description`: Full job description
+  * `requirements`, `responsibilities`, `department`: "IT"
+  * `employment_type`: "FULL\_TIME"
+  * `created_by`: 101 (from `users`)
+* System generates a unique `job_id`
+
+---
+
+## ✅ **US02 – Candidate applies to a job**
+
+**Tables Involved:** `users`, `candidates`, `applications`
+
+### 📌 Example Scenario:
+
+Jane (user\_id: 205), a candidate, uploads her resume and applies to job\_id: 7.
+
+### 💾 Table Usage:
+
+* `users`: Holds Jane's basic user info.
+* `candidates`: Links Jane's user\_id and stores her resume and cover letter URLs.
+* `applications`: Links Jane’s candidate\_id to job\_id = 7, sets status = `APPLIED`.
+
+---
+
+## ✅ **US03 – HR manages candidate applications**
+
+**Tables Involved:** `applications`, `candidates`, `candidate_notes`, `job_postings`, `users`
+
+### 📌 Example Scenario:
+
+HR Manager filters all applications for the "Software Engineer" position and moves suitable candidates to the "INTERVIEW\_SCHEDULED" stage.
+
+### 💾 Table Usage:
+
+* `applications`: Retrieved with `job_id=7`; status updated from `APPLIED` → `INTERVIEW_SCHEDULED`
+* `candidate_notes`: HR adds internal comments like "Great experience in Java"
+* `users`: Helps show candidate contact info by joining with `candidates`
+
+---
+
+## ✅ **US04 – HR schedules interviews**
+
+**Tables Involved:** `interviews`, `interviewers`, `applications`, `users`
+
+### 📌 Example Scenario:
+
+Interview scheduled for Jane (application\_id: 301) with two interviewers (user\_id: 401, 402) on Zoom.
+
+### 💾 Table Usage:
+
+* `interviews`: Links to `application_id`, stores datetime, `interview_type='VIDEO'`, and Zoom link.
+* `interviewers`: Adds (401, 301) and (402, 301) to define panel.
+* Notifications sent using logic + `email_templates`.
+
+---
+
+## ✅ **US05 – Hiring manager gives interview feedback**
+
+**Tables Involved:** `interview_feedback`, `interviews`, `users`
+
+### 📌 Example Scenario:
+
+After Jane’s interview, both interviewers submit ratings and comments.
+
+### 💾 Table Usage:
+
+* `interview_feedback`: Stores `interview_id`, `reviewer_id`, `rating` (1-5), and comments like “Strong communication”.
+* Aggregate score is computed for HR dashboard.
+
+---
+
+## ✅ **US06 – Role-based access control**
+
+**Tables Involved:** `users`, `audit_log`
+
+### 📌 Example Scenario:
+
+HR manager can view all applications, but an executive can only see final shortlisted candidates.
+
+### 💾 Table Usage:
+
+* `users`: `role` field limits access (`RECRUITER`, `MANAGER`, etc.)
+* `audit_log`: Records user actions like “Viewed candidate resume” for security tracking.
+
+---
+
+## ✅ **US07 – Track candidate pipeline**
+
+**Tables Involved:** `applications`, `application_status_history`, `job_postings`
+
+### 📌 Example Scenario:
+
+Jane moves from "INTERVIEWED" → "OFFERED" → "HIRED"
+
+### 💾 Table Usage:
+
+* `applications`: Current status is updated.
+* `application_status_history`: Logs every change with timestamp and who changed it (`changed_by`).
+
+---
+
+## ✅ **US08 – Customize email templates**
+
+**Tables Involved:** `email_templates`, `users`
+
+### 📌 Example Scenario:
+
+Admin customizes an “Interview Invitation” email to include candidate name and job title.
+
+### 💾 Table Usage:
+
+* `email_templates`: Stores template name, subject, body, and creator (`created_by`).
+
+---
+
+## ✅ **US09 – Candidate receives updates**
+
+**Tables Involved:** `applications`, `application_status_history`, `email_templates`
+
+### 📌 Example Scenario:
+
+Jane’s application status changes to “INTERVIEW\_SCHEDULED”; she receives an email.
+
+### 💾 Table Usage:
+
+* `application_status_history`: Triggers update.
+* `email_templates`: Supplies message format.
+* No need for new table; logic handles notification sending.
+
+---
+
+## ✅ **US10 – Create and manage interview panels**
+
+**Tables Involved:** `interviewers`, `interviews`, `users`
+
+### 📌 Example Scenario:
+
+Create a panel with 3 interviewers for the final round.
+
+### 💾 Table Usage:
+
+* `interviewers`: Adds all interviewers to a specific `interview_id`
+* `users`: Helps select who is eligible to be a panelist
+
+---
+
+## ✅ **US11 – Data protection and compliance**
+
+**Tables Involved:** `users`, `audit_log`, `onboarding_documents`, `applications`
+
+### 📌 Example Scenario:
+
+System deletes inactive candidate data after 2 years.
+
+### 💾 Table Usage:
+
+* `audit_log`: Shows who accessed what
+* `users`: `status` used to deactivate accounts
+* `onboarding_documents`: Ensures all signed documents are stored securely
+* Logic implements data retention rules (e.g., delete after X days)
+
+---
+
+## ✅ **US12 – Constructive feedback to candidates**
+
+**Tables Involved:** `interview_feedback`
+
+### 📌 Example Scenario:
+
+Jane was rejected, and the system emails her a polite summary of feedback.
+
+### 💾 Table Usage:
+
+* `interview_feedback`: Feedback already exists, just filtered for public sharing
+* Logic controls what to share
+
+---
+
+## ✅ **US13 – Onboarding document management**
+
+**Tables Involved:** `onboarding_documents`, `candidates`
+
+### 📌 Example Scenario:
+
+Jane uploads ID proof and signs her offer letter.
+
+### 💾 Table Usage:
+
+* `onboarding_documents`: Tracks file URL, type, signed status, and upload date
+* `candidates`: Link onboarding docs to the candidate
+
+---
+
+## ✅ **US14 – System usage reports**
+
+**Tables Involved:** `audit_log`, `users`
+
+### 📌 Example Scenario:
+
+Admin wants to see login frequency per user role.
+
+### 💾 Table Usage:
+
+* `audit_log`: Filters action\_type = "LOGIN"
+* `users`: Joins on user\_id to segment by role
+
+---
+
+## ✅ **US15 – Create and manage talent pools**
+
+**Tables Involved:** `talent_pool`, `candidates`, `users`, `candidate_notes`
+
+### 📌 Example Scenario:
+
+HR tags 5 strong candidates as "Mobile Developers" and sends them re-engagement emails after 3 months.
+
+### 💾 Table Usage:
+
+* `talent_pool`: Stores tags, contact history, and candidate source
+* `candidate_notes`: Stores follow-up notes like “Reached out on LinkedIn”
+
+---
+
+## ✅ Summary Table
+
+| User Story | Key Tables Used                                                 |
+| ---------- | --------------------------------------------------------------- |
+| US01       | `job_postings`, `users`                                         |
+| US02       | `users`, `candidates`, `applications`                           |
+| US03       | `applications`, `candidates`, `candidate_notes`                 |
+| US04       | `interviews`, `interviewers`, `applications`                    |
+| US05       | `interview_feedback`, `interviews`                              |
+| US06       | `users`, `audit_log`                                            |
+| US07       | `applications`, `application_status_history`                    |
+| US08       | `email_templates`                                               |
+| US09       | `applications`, `application_status_history`, `email_templates` |
+| US10       | `interviewers`, `interviews`, `users`                           |
+| US11       | `audit_log`, `users`, `onboarding_documents`                    |
+| US12       | `interview_feedback`                                            |
+| US13       | `onboarding_documents`, `candidates`                            |
+| US14       | `audit_log`, `users`                                            |
+| US15       | `talent_pool`, `candidates`, `candidate_notes`                  |
+============================================================================================================================================================================
+
+Based on the provided **User Stories (US01–US15)** and the **existing database schema**, here's a **simple explanation of each table**, **how it maps to user stories**, and an **analysis on whether additional tables are needed**.
+
+---
+
+### ✅ **1. USERS TABLE**
+
+**Why it's used:**
+
+* Stores information about all types of users in the system: recruiters, managers, admins, candidates, etc.
+* Supports role-based access control (`role` field) and login security (multi-factor authentication, `mfa_enabled`).
+
+**User Stories Covered:**
+
+* **US06**: Role-based access
+* **US11**: Security and compliance
+* **US02, US13**: Candidate registration (through the `CANDIDATES` table reference)
+* **US10**: Interview panel (interviewers are also users)
+
+---
+
+### ✅ **2. JOB\_POSTINGS TABLE**
+
+**Why it's used:**
+
+* Stores job listings posted by recruiters.
+* Captures job details like description, location, type, and status (active/inactive).
+
+**User Stories Covered:**
+
+* **US01**: Job creation and posting
+* **US02**: Candidates apply to jobs
+* **US09**: Job context for application updates
+
+---
+
+### ✅ **3. CANDIDATES TABLE**
+
+**Why it's used:**
+
+* Extends user information specific to candidates.
+* Stores resume and cover letter URLs.
+
+**User Stories Covered:**
+
+* **US02**: Candidate application submission
+* **US13**: Onboarding documentation
+* **US15**: Talent pools
+
+---
+
+### ✅ **4. APPLICATIONS TABLE**
+
+**Why it's used:**
+
+* Tracks candidate applications to specific job postings.
+* Stores application status and timestamps.
+
+**User Stories Covered:**
+
+* **US02, US03, US07, US09**: Full recruitment pipeline tracking
+* **US01**: Relates to job\_id from job\_postings
+
+---
+
+### ✅ **5. INTERVIEWS TABLE**
+
+**Why it's used:**
+
+* Stores scheduled interviews linked to applications.
+* Captures time, type (video, in-person), and link or location.
+
+**User Stories Covered:**
+
+* **US04**: Interview scheduling
+* **US07**: Pipeline progression
+* **US05**: Feedback after interviews
+
+---
+
+### ✅ **6. INTERVIEWERS TABLE**
+
+**Why it's used:**
+
+* Maps interviewers (users) to interviews (many-to-many).
+* Supports panel interviews and management.
+
+**User Stories Covered:**
+
+* **US10**: Interview panel creation and management
+
+---
+
+### ✅ **7. INTERVIEW\_FEEDBACK TABLE**
+
+**Why it's used:**
+
+* Allows interviewers to provide candidate ratings and comments.
+* Links feedback to interview and reviewer.
+
+**User Stories Covered:**
+
+* **US05**: Feedback and ratings
+* **US12**: Constructive feedback to candidates
+
+---
+
+### ✅ **8. CANDIDATE\_NOTES TABLE**
+
+**Why it's used:**
+
+* Stores internal notes by HR on candidates.
+* Not visible to candidates; used for collaboration.
+
+**User Stories Covered:**
+
+* **US03**: Notes in candidate profiles
+* **US15**: Profile management in talent pool
+
+---
+
+### ✅ **9. EMAIL\_TEMPLATES TABLE**
+
+**Why it's used:**
+
+* Stores editable templates for system-generated emails.
+* Supports personalization and reuse.
+
+**User Stories Covered:**
+
+* **US08**: Email template customization
+* **US04, US09, US12**: Used to send emails
+
+---
+
+### ✅ **10. ONBOARDING\_DOCUMENTS TABLE**
+
+**Why it's used:**
+
+* Manages digital documents needed post-hiring.
+* Supports e-signatures and document tracking.
+
+**User Stories Covered:**
+
+* **US13**: Onboarding document management
+
+---
+
+### ✅ **11. AUDIT\_LOG TABLE**
+
+**Why it's used:**
+
+* Tracks system access and user actions for security and compliance.
+
+**User Stories Covered:**
+
+* **US06, US11**: Role-based access logs and data protection
+
+---
+
+### ✅ **12. TALENT\_POOL TABLE**
+
+**Why it's used:**
+
+* Keeps candidates not currently in process but may be useful in future.
+* Supports tagging and engagement tracking.
+
+**User Stories Covered:**
+
+* **US15**: Talent pool creation and re-engagement
+
+---
+
+### ✅ **13. APPLICATION\_STATUS\_HISTORY TABLE**
+
+**Why it's used:**
+
+* Tracks how the status of a candidate's application has changed over time.
+
+**User Stories Covered:**
+
+* **US07**: Visual pipeline tracking with history
+* **US09**: Clear communication on status
+==============================================================================================================================================================================
+Certainly! Here's a simplified **scenario-style explanation** of the entire problem statement based on the user stories. This approach tells the story of how different users—HR professionals, candidates, hiring managers, and system administrators—interact with the **HR Recruitment Pipeline Manager** throughout the recruitment process. Each scenario ties into one or more user stories in plain, easy-to-understand English.
+
+---
+
+### **Scenario: The Complete Journey of Recruitment Using the HR Recruitment Pipeline Manager**
+
+#### 1. **Starting the Hiring Process**
+
+An **HR recruiter** logs into the recruitment system to post a new job opening (US 01). They fill out a form with the job title, description, qualifications, location, department, and type of employment (full-time, part-time, etc.). The system automatically generates a unique job ID and lets them mark the post as active or inactive.
+
+#### 2. **Candidate Applies for the Job**
+
+A **candidate** finds the job posting on the portal and decides to apply (US 02). They upload their resume, optionally a cover letter, and fill out a detailed application form. After submitting, the system sends them a confirmation email and starts tracking their application status.
+
+#### 3. **HR Views and Manages Applications**
+
+An **HR manager** logs into a dashboard (US 03). They see all applications in one place, can filter them by skills, experience, or job title, and view detailed candidate profiles. They can move candidates through different stages (like from "Applied" to "Phone Screen") and add private comments for internal discussions.
+
+#### 4. **Scheduling Interviews**
+
+Once a candidate reaches the interview stage, the **HR recruiter** schedules an interview (US 04). The system lets them choose interviewers, select a date and time, and specify if it's in-person, video, or phone. Candidates and interviewers get email invitations automatically, along with any prep material.
+
+#### 5. **Providing Interview Feedback**
+
+After the interview, a **hiring manager** fills out a standardized feedback form with scores and comments (US 05). Once they submit the feedback, the HR team gets notified and can view the total feedback and ratings from all interviewers.
+
+#### 6. **Securing Sensitive Data**
+
+The system uses **role-based access control** (US 06), so different users (recruiters, managers, executives) only see what they’re allowed to. For example, only HR can see candidate salary expectations or personal IDs. Secure login and an audit log ensure everything is tracked properly.
+
+#### 7. **Tracking Candidates Visually**
+
+The **recruitment pipeline** shows where each candidate is—Applied, Phone Screen, Interview, Offer, Hired (US 07). Recruiters can drag and drop candidates to move them manually or let them progress automatically based on actions like completing interviews.
+
+#### 8. **System Customization by Admin**
+
+A **system administrator** logs in to customize email templates (US 08) that are sent when a candidate is invited for an interview or receives an offer. They also generate usage reports (US 14) that show how often the system is used, by whom, and identify any security concerns.
+
+#### 9. **Keeping Candidates Informed**
+
+Candidates receive automatic updates (US 09) as their application moves forward. They can also log in to a portal to check their current status, see position details, and even withdraw their application if they choose.
+
+#### 10. **Managing Interview Panels**
+
+**Hiring managers** can create interview panels with multiple interviewers for group interviews (US 10). The system prevents scheduling conflicts and helps consolidate the panel’s feedback in one place.
+
+#### 11. **Ensuring Data Compliance**
+
+The system ensures everything is done according to laws like **GDPR** (US 11). Candidates give consent for data collection, and the system automatically deletes old data. All sensitive information is encrypted.
+
+#### 12. **Sending Feedback to Rejected Candidates**
+
+If a candidate is not selected, the HR recruiter has the option to send **constructive feedback** (US 12). It’s done professionally and securely, and it helps the candidate understand how they can improve.
+
+#### 13. **Onboarding New Hires**
+
+Once a candidate is hired, the HR recruiter starts the **onboarding** process (US 13). The candidate uploads documents like ID proofs and bank details, signs them digitally, and tracks document submission through the portal.
+
+#### 14. **Building Talent Pools**
+
+Some candidates may not be hired now but show potential. The **HR manager** adds them to a **talent pool** (US 15) with tags like "Java Developer" or "Marketing Intern" and sets reminders to reach out in the future.
+
+
+=============================================================================================================================================================================
+
+🔹 1. HR Recruiter
+Primary Focus: Managing job postings and the recruitment process from start to finish.
+
+Responsibilities:
+
+Create and publish job openings (US 01)
+
+Schedule interviews with candidates and interviewers (US 04)
+
+Move candidates through different recruitment stages (US 03, US 07)
+
+Manage onboarding documentation for selected candidates (US 13)
+
+Send feedback to rejected candidates, if needed (US 12)
+
+Ensure candidate data privacy via role-based access (US 06)
+
+Organize candidates into talent pools for future opportunities (US 15)
+
+🔹 2. HR Manager
+Primary Focus: Overseeing the recruitment process and managing candidate evaluations.
+
+Responsibilities:
+
+View and manage all applications using a centralized dashboard (US 03)
+
+Filter and search candidates by various criteria
+
+Track feedback and interview scores from hiring managers (US 05)
+
+Create interview panels and consolidate evaluations (US 10)
+
+Manage and analyze talent pools for strategic hiring (US 15)
+
+🔹 HR Professional (General Term)
+Primary Focus: Broader HR responsibilities, including security, compliance, and access control.
+
+Responsibilities:
+
+Set access permissions for different users (US 06)
+
+Monitor audit logs and data access
+
+Ensure compliance with data protection laws (GDPR, etc.) (US 11)
+
+Support documentation handling and secure onboarding processes (US 13)
+
+Note: “HR professional” can refer to both recruiters and HR managers depending on context.
+
+🔹 Hiring Manager
+Primary Focus: Evaluating candidates and helping make hiring decisions.
+
+Responsibilities:
+
+Provide interview feedback using rating forms (US 05)
+
+Submit detailed evaluations with comments
+
+Create and manage interview panels (US 10)
+
+Review candidate scores and collaborate with HR to make final decisions
+
+🔹 Candidate
+Primary Focus: Applying for jobs, participating in interviews, and receiving updates.
+
+Responsibilities:
+
+Search and apply for jobs (US 02)
+
+Submit resumes and cover letters
+
+Track application status through a portal (US 09)
+
+Receive interview invitations and updates (US 04, US 09)
+
+Get feedback after interviews if available (US 12)
+
+Upload onboarding documents if hired (US 13)
+
+Withdraw application if needed
+
+🔹 System Administrator
+Primary Focus: System configuration, monitoring, and reporting.
+
+Responsibilities:
+
+Customize email templates for various recruitment stages (US 08)
+
+Generate reports on system usage, user activity, and security (US 14)
+
+Track performance metrics
+
+Manage access controls and overall system behavior
