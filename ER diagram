@@ -1,0 +1,159 @@
+@startuml
+
+' Define Entities
+entity "users" as users {
+  *user_id : BIGINT
+  --
+  username : VARCHAR
+  password_hash : VARCHAR
+  email : VARCHAR
+  full_name : VARCHAR
+  role : ENUM
+  status : ENUM
+  mfa_enabled : BOOLEAN
+  created_at : TIMESTAMP
+}
+
+entity "job_postings" as job_postings {
+  *job_id : BIGINT
+  --
+  title : VARCHAR
+  description : TEXT
+  requirements : TEXT
+  responsibilities : TEXT
+  location : VARCHAR
+  department : VARCHAR
+  employment_type : ENUM
+  status : ENUM
+  created_by : BIGINT
+  created_at : TIMESTAMP
+}
+
+entity "candidates" as candidates {
+  *candidate_id : BIGINT
+  --
+  user_id : BIGINT
+  resume_url : TEXT
+  cover_letter_url : TEXT
+  created_at : TIMESTAMP
+}
+
+entity "applications" as applications {
+  *application_id : BIGINT
+  --
+  candidate_id : BIGINT
+  job_id : BIGINT
+  status : ENUM
+  applied_at : TIMESTAMP
+  last_updated : TIMESTAMP
+}
+
+entity "interviews" as interviews {
+  *interview_id : BIGINT
+  --
+  application_id : BIGINT
+  interview_datetime : DATETIME
+  interview_type : ENUM
+  location_or_link : TEXT
+  status : ENUM
+  created_at : TIMESTAMP
+}
+
+entity "interviewers" as interviewers {
+  *interview_id : BIGINT
+  *interviewer_id : BIGINT
+}
+
+entity "interview_feedback" as interview_feedback {
+  *feedback_id : BIGINT
+  --
+  interview_id : BIGINT
+  reviewer_id : BIGINT
+  rating : TINYINT
+  comments : TEXT
+  submitted_at : TIMESTAMP
+}
+
+entity "candidate_notes" as candidate_notes {
+  *note_id : BIGINT
+  --
+  candidate_id : BIGINT
+  added_by : BIGINT
+  note : TEXT
+  added_at : TIMESTAMP
+}
+
+entity "email_templates" as email_templates {
+  *template_id : BIGINT
+  --
+  name : VARCHAR
+  type : ENUM
+  subject : VARCHAR
+  body : TEXT
+  created_by : BIGINT
+  created_at : TIMESTAMP
+}
+
+entity "onboarding_documents" as onboarding_documents {
+  *document_id : BIGINT
+  --
+  candidate_id : BIGINT
+  document_name : VARCHAR
+  document_url : TEXT
+  signed : BOOLEAN
+  uploaded_at : TIMESTAMP
+}
+
+entity "audit_log" as audit_log {
+  *log_id : BIGINT
+  --
+  user_id : BIGINT
+  action_type : VARCHAR
+  description : TEXT
+  action_time : TIMESTAMP
+}
+
+entity "talent_pool" as talent_pool {
+  *pool_id : BIGINT
+  --
+  candidate_id : BIGINT
+  tags : TEXT
+  source : VARCHAR
+  reengagement_status : ENUM
+  last_contacted_at : TIMESTAMP
+}
+
+entity "application_status_history" as application_status_history {
+  *history_id : BIGINT
+  --
+  application_id : BIGINT
+  previous_status : VARCHAR
+  new_status : VARCHAR
+  changed_at : TIMESTAMP
+  changed_by : BIGINT
+}
+
+' Define Relationships
+users ||--o{ job_postings : "creates"
+users ||--o{ interviewers : "assigned to interview"
+users ||--o{ interview_feedback : "gives feedback"
+users ||--o{ candidate_notes : "adds notes"
+users ||--o{ email_templates : "creates templates"
+users ||--o{ audit_log : "logged action"
+users ||--o{ application_status_history : "changes status"
+
+job_postings ||--o{ applications : "receives"
+
+candidates ||--|| users : "is a user"
+candidates ||--o{ applications : "applies"
+candidates ||--o{ candidate_notes : "has notes"
+candidates ||--o{ onboarding_documents : "uploads"
+candidates ||--o{ talent_pool : "belongs to"
+
+applications ||--o{ interviews : "has interviews"
+applications ||--o{ application_status_history : "has status changes"
+
+interviews ||--o{ interviewers : "has interviewers"
+interviews ||--o{ interview_feedback : "receives"
+
+@enduml
