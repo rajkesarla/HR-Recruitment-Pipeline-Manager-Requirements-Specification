@@ -1,0 +1,35 @@
+CREATE TABLE applications (
+    application_id BIGINT AUTO_INCREMENT PRIMARY KEY,                      -- Unique identifier for each application
+    candidate_id BIGINT NOT NULL,                                            -- Candidate applying for the job
+    job_id BIGINT NOT NULL,                                                  -- The job the candidate applied for
+    status ENUM('APPLIED', 'REVIEWED', 'INTERVIEW_SCHEDULED', 'INTERVIEWED', 'OFFERED', 'REJECTED', 'HIRED', 'WITHDRAWN') 
+        NOT NULL DEFAULT 'APPLIED',                                         -- Status of the application
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,                         -- Timestamp when the application was created
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,  -- Timestamp when the application was last updated
+    
+    -- Personal details:
+    first_name VARCHAR(100),                                                 -- Candidate's first name
+    last_name VARCHAR(100),                                                  -- Candidate's last name
+    email VARCHAR(150) UNIQUE,                                               -- Candidate's email address (unique)
+    date_of_birth DATE,                                                      -- Candidate's date of birth
+    phone_number VARCHAR(20),                                                -- Candidate's phone number
+    address VARCHAR(255),                                                    -- Candidate's home address
+    
+    -- Academic Details:
+    college_name VARCHAR(255),                                               -- Candidate's college name
+    tenth_percentage DECIMAL(5, 2),                                          -- Candidate's 10th grade percentage
+    twelfth_percentage DECIMAL(5, 2),                                        -- Candidate's 12th grade percentage
+    graduation_cgpa DECIMAL(4, 2),                                           -- Candidate's graduation CGPA
+    post_graduation_cgpa DECIMAL(4, 2),                                     -- Candidate's post-graduation CGPA (optional)
+    passed_out_year INT,                                                     -- Year the candidate passed out of college
+    backlog_history TEXT,                                                    -- Candidate's backlog history (optional, can store text about number of backlogs)
+    
+    -- Skills & Projects:
+    skills TEXT,                                                             -- List of skills the candidate has (e.g., programming languages, tools, etc.)
+    projects TEXT,                                                           -- Description of the candidate's key projects
+    course VARCHAR(255),                                                     -- The course the candidate studied (e.g., B.Tech, M.Tech)
+    specialization VARCHAR(255),                                             -- Candidate's area of specialization (e.g., Computer Science, Mechanical Engineering)
+    
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),         -- Foreign key reference to the candidates table
+    FOREIGN KEY (job_id) REFERENCES job_postings(job_id)                    -- Foreign key reference to the job_postings table
+);
