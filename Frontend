@@ -1,0 +1,175 @@
+<div class="container">
+  <div class="row">
+    <div class="offset-1 col-10">
+      <br />
+      <h3 class="text-center">Create Job Posting</h3>
+      <br />
+
+      <div class="row">
+        <div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 offset-1 col-10 formBlock">
+          <form [formGroup]="jobPostingForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Job Title -->
+            <div class="form-group">
+              <label for="jobTitle">Job Title</label>
+              <input type="text" id="jobTitle" class="form-control" formControlName="title">
+              <span class="text-danger" *ngIf="jobPostingForm.controls['title'].invalid && (jobPostingForm.controls['title'].dirty || jobPostingForm.controls['title'].touched)">
+                Job title is required.
+              </span>
+            </div>
+
+            <!-- Job Description -->
+            <div class="form-group">
+              <label for="jobDescription">Job Description</label>
+              <textarea id="jobDescription" class="form-control" formControlName="description" rows="3"></textarea>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['description'].invalid && (jobPostingForm.controls['description'].dirty || jobPostingForm.controls['description'].touched)">
+                Job description is required.
+              </span>
+            </div>
+
+            <!-- Requirements -->
+            <div class="form-group">
+              <label for="requirements">Requirements</label>
+              <textarea id="requirements" class="form-control" formControlName="requirements" rows="3"></textarea>
+            </div>
+
+            <!-- Responsibilities -->
+            <div class="form-group">
+              <label for="responsibilities">Responsibilities</label>
+              <textarea id="responsibilities" class="form-control" formControlName="responsibilities" rows="3"></textarea>
+            </div>
+
+            <!-- Department -->
+            <div class="form-group">
+              <label for="department">Department</label>
+              <select id="department" class="form-control" formControlName="department">
+                <option value="">Choose department</option>
+                <option value="HR">HR</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Sales">Sales</option>
+                <option value="Marketing">Marketing</option>
+              </select>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['department'].invalid && (jobPostingForm.controls['department'].dirty || jobPostingForm.controls['department'].touched)">
+                Please select a department.
+              </span>
+            </div>
+
+            <!-- Job Location -->
+            <div class="form-group">
+              <label for="jobLocation">Job Location</label>
+              <input type="text" id="jobLocation" class="form-control" formControlName="location">
+              <span class="text-danger" *ngIf="jobPostingForm.controls['location'].invalid && (jobPostingForm.controls['location'].dirty || jobPostingForm.controls['location'].touched)">
+                Job location is required.
+              </span>
+            </div>
+
+            <!-- Employment Type -->
+            <div class="form-group">
+              <label for="employmentType">Employment Type</label>
+              <select id="employmentType" class="form-control" formControlName="employment_type">
+                <option value="">Select type</option>
+                <option value="FULL_TIME">Full-Time</option>
+                <option value="PART_TIME">Part-Time</option>
+                <option value="CONTRACT">Contract</option>
+                <option value="INTERN">Internship</option>
+              </select>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['employment_type'].invalid && (jobPostingForm.controls['employment_type'].dirty || jobPostingForm.controls['employment_type'].touched)">
+                Please select employment type.
+              </span>
+            </div>
+
+            <!-- Job Status -->
+            <div class="form-group">
+              <label for="jobStatus">Job Posting Status</label>
+              <select id="jobStatus" class="form-control" formControlName="status">
+                <option value="">Select status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['status'].invalid && (jobPostingForm.controls['status'].dirty || jobPostingForm.controls['status'].touched)">
+                Please select a status.
+              </span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+              <button type="submit" class="btn btn-danger" [disabled]="jobPostingForm.invalid || jobPostingForm.pristine">Submit</button>
+            </div>
+          </form>
+
+          <span *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</span>
+          <span *ngIf="successMessage" class="text-success">{{ successMessage }}</span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+-----------------------------------------------------------------
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JobpostService } from './jobpost.service';
+
+@Component({
+  selector: 'app-recjobpost',
+  templateUrl: './recjobpost.component.html',
+  styleUrls: ['./recjobpost.component.css']
+})
+export class RecjobpostComponent implements OnInit {
+  jobPostingForm!: FormGroup;
+  errorMessage!: string;
+  successMessage!: string;
+
+  constructor(private formBuilder: FormBuilder, private jobPostService: JobpostService) {}
+
+  ngOnInit(): void {
+    this.jobPostingForm = this.formBuilder.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      requirements: [''],
+      responsibilities: [''],
+      department: ['', Validators.required],
+      location: ['', Validators.required],
+      employment_type: ['', Validators.required],
+      status: ['', Validators.required]
+    });
+  }
+
+  onSubmit(): void {
+    this.successMessage = '';
+    this.errorMessage = '';
+
+    if (this.jobPostingForm.invalid) {
+      this.errorMessage = 'Please fill in all required fields correctly.';
+      return;
+    }
+
+    this.jobPostService.createJobPost(this.jobPostingForm.value).subscribe(
+      () => {
+        this.successMessage = 'Job posting created successfully!';
+        this.jobPostingForm.reset();
+      },
+      () => {
+        this.errorMessage = 'Something went wrong. Please try again later.';
+      }
+    );
+  }
+}
+
+-----------------------------------------------------------------------------
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class JobpostService {
+  constructor(private http: HttpClient) {}
+
+  createJobPost(jobpost: any): Observable<any> {
+    return this.http.post("http://localhost:8080/job/jobpost", jobpost);
+  }
+}
