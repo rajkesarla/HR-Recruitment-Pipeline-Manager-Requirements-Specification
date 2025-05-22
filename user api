@@ -47,3 +47,9 @@ public class UserAPI {
         return ResponseEntity.noContent().build();
     }
 }
+
+Reposotory:
+
+ Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String username);
+    boolean existsByEmail(String email);
