@@ -1,0 +1,49 @@
+package com.infy.hrpipelinemanager.api;
+
+import com.infy.hrpipelinemanager.dto.UserDTO;
+import com.infy.hrpipelinemanager.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.Optional;
+@RestController
+@RequestMapping("/api/users")
+public class UserAPI {
+@Autowired
+    private UserService userService;
+
+    @PostMapping("/submit")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        UserDTO createdUser = userService.createUser(userDTO);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        Optional<UserDTO> userOpt = userService.getUserById(id);
+        return userOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+@GetMapping("/email/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        Optional<UserDTO> userOpt = userService.getUserByEmail(email);
+        return userOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        Optional<UserDTO> userOpt = userService.getUserByUsername(username);
+        return userOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+}
