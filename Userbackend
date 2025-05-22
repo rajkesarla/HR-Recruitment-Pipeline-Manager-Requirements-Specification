@@ -1,0 +1,175 @@
+
+///API...............
+package com.infy.hrpipelinemanager.api;
+
+import com.infy.hrpipelinemanager.dto.UserDTO;
+import com.infy.hrpipelinemanager.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/users")
+public class UserAPI {
+
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/submit")
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        UserDTO createdUser = userService.createUser(userDTO);
+        return ResponseEntity.ok(createdUser);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UserDTO> getUserById(@PathVariable Long id) {
+        Optional<UserDTO> userOpt = userService.getUserById(id);
+        return userOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserDTO> getUserByEmail(@PathVariable String email) {
+        Optional<UserDTO> userOpt = userService.getUserByEmail(email);
+        return userOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/username/{username}")
+    public ResponseEntity<UserDTO> getUserByUsername(@PathVariable String username) {
+        Optional<UserDTO> userOpt = userService.getUserByUsername(username);
+        return userOpt.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserDTO>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+}
+
+
+
+
+
+
+
+...................Repository----------------
+package com.infy.hrpipelinemanager.repository;
+
+import java.util.Optional;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.infy.hrpipelinemanager.entity.User;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByEmail(String email);
+    Optional<User> findByUsername(String username);
+    boolean existsByEmail(String email);
+   
+}
+
+
+------------------------service--------------------
+package com.infy.hrpipelinemanager.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.infy.hrpipelinemanager.dto.UserDTO;
+//import com.infy.hrpipelinemanager.entity.User;
+
+public interface UserService {
+	 UserDTO createUser(UserDTO userDTO);
+	    Optional<UserDTO> getUserById(Long userId);
+	    Optional<UserDTO> getUserByUsername(String username);
+	    Optional<UserDTO> getUserByEmail(String email);
+	    boolean userExistsByEmail(String email);
+	    List<UserDTO> getAllUsers();
+	    void deleteUser(Long userId);
+
+}
+
+----------------Service Implementation-----------------
+
+package com.infy.hrpipelinemanager.service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.infy.hrpipelinemanager.dto.UserDTO;
+import com.infy.hrpipelinemanager.entity.User;
+import com.infy.hrpipelinemanager.repository.UserRepository;
+
+@Service(value="userService")
+public class UserServiceImpl implements UserService {
+	@Autowired
+    private UserRepository userRepository;
+
+    private final ModelMapper modelMapper = new ModelMapper();
+
+    @Override
+    public UserDTO createUser(UserDTO userDTO) {
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new IllegalArgumentException("UserService.USER_EMAIL_ALREADY_EXISTS");
+        }
+
+        User user = modelMapper.map(userDTO, User.class);
+        User savedUser = userRepository.save(user);
+        return modelMapper.map(savedUser, UserDTO.class);
+    }
+
+    @Override
+    public Optional<UserDTO> getUserById(Long id) {
+        return userRepository.findById(id).map(user -> modelMapper.map(user, UserDTO.class));
+    }
+    
+    @Override
+    public Optional<UserDTO> getUserByUsername(String name) {
+        return userRepository.findByUsername(name).map(user -> modelMapper.map(user, UserDTO.class));
+    }
+
+
+    @Override
+    public Optional<UserDTO> getUserByEmail(String email) {
+        return userRepository.findByEmail(email).map(user -> modelMapper.map(user, UserDTO.class));
+    }
+
+    @Override
+    public boolean userExistsByEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+    @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteUser(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new IllegalArgumentException("UserService.USER_NOT_EXISTS");
+        }
+        userRepository.deleteById(userId);
+    }
+
+
+}
+
+
+
+
