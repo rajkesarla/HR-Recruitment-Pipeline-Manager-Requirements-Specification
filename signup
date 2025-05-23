@@ -1,0 +1,210 @@
+.signup-container {
+  display: flex;
+  justify-content: center;
+  padding:5px 5px 5px 0px;
+  align-items: center;
+  height: 90vh;
+  /* background: linear-gradient(to top right, #0fb4e7); */
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 15px 25px;
+  width: 320px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border:none;
+}
+.center-text {
+  text-align: center;
+}
+#role{
+  color:#888;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.tab {
+  background: none;
+  /* border: none; */
+  font-weight: 600;
+  cursor: pointer;
+  color: #888;
+  font-size: 16px;
+}
+
+.tab.active {
+  /* border-bottom: 2px solid #1fd1a5; */
+  color: #090a0a;
+  text-align:center;
+  font-weight: bolder;
+  font-size: 26px;
+}
+
+form input[type="text"],
+form input[type="email"],
+form input[type="password"] {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.checkbox {
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.checkbox input {
+  margin-right: 8px;
+}
+
+.register-btn {
+  width: 100%;
+  background: linear-gradient(to right, #1fd1a5, #0fb4e7);
+  color: white;
+  font-weight: bold;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
+.footer {
+  text-align: center;
+  font-size: 13px;
+  margin-top: 15px;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: back-ground 0.3s ease;
+}
+
+button:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+}
+
+/* button:hover:enabled {
+  background-color: #0056b3;
+} */
+
+.error {
+  color: red;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+
+
+<div class="signup-container">
+  <div class="card">
+    <div class="tabs">
+      <!-- <button class="tab">Sign In</button> -->
+      <button class="tab active" >Sign Up</button>
+    </div>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <input formControlName="name" type="text" placeholder="Name" />
+<div class="form-group">
+              <!-- <label for="role">Role</label> -->
+              <select id="role" class="form-control" formControlName="role">
+                <option value="" >Select Role</option>
+                <option value="HR_RECRUITER">HR_RECRUITER</option>
+                <option value="HR_MANAGER">HR_MANAGER</option>
+                <option value="SYSTEM_ADMIN">SYSTEM_ADMIN</option>
+                <option value="HIRING_MANAGER">HIRING_MANAGER</option>
+                <option value="INTERVIEWER">INTERVIEWER</option>
+                <option value="CANDIDATE">CANDIDATE</option>
+                <option value="HR_EXECUTIVE">HR_EXECUTIVE</option>
+              </select>
+              <div *ngIf="f['role'].touched && f['role'].invalid" class="text-danger small">
+                Role is required.
+              </div>
+            </div>
+      <input formControlName="username" type="text" placeholder="Username" />
+      <input formControlName="email" type="email" placeholder="Email" />
+      <input formControlName="password" type="password" placeholder="Password" />
+      <!-- <input formControlName="confirmPassword" type="password" placeholder="Confirm Password" /> -->
+
+      <label class="checkbox">
+        <input type="checkbox" formControlName="agree" />
+        I agree with privacy policy
+      </label>
+
+      <button class="btn btn-primary register-btn" type="submit" [disabled]="signupForm.invalid">Register</button>
+    </form>
+
+    <div class="footer">
+      Already a member? <a routerLink="/login">Login</a>
+    </div>
+  </div>
+</div>
+
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-signup',
+  templateUrl: './signup.component.html',
+  styleUrls: ['./signup.component.css']
+})
+export class SignupComponent implements OnInit {
+  signupForm!: FormGroup;
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.signupForm = this.fb.group({
+      name: ['', [Validators.required]],
+      role: ['', [Validators.required]],
+      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', [Validators.required]],
+      agree: [false, [Validators.requiredTrue]]
+    });
+  }
+
+  
+  // Getter for easier form controls access in template
+  get f() {
+    return this.signupForm.controls;
+  }
+
+  onSubmit(): void {
+    if (this.signupForm.invalid) {
+      this.signupForm.markAllAsTouched();
+      return;
+    }
+
+    const formData = this.signupForm.value;
+    // Remove confirmPassword from the data before sending
+    delete formData.confirmPassword;
+
+    console.log('Form Submitted', formData);
+    // TODO: Add your submission logic (e.g., call an API)
+  }
+}
+
+
+
+
