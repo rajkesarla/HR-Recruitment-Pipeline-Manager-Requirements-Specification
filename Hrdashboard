@@ -1,1 +1,575 @@
+html
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h2>HR Manager</h2>
+    <span class="dashboard-title">Management Dashboard</span>
+  </div>
+  <div class="dashboard-content">
+    <div class="left-panel">
+      <div class="search-filter">
+        <label class="section-title">Search and Fiiter Candidates</label>
+        <div class="search-row">
+          <input type="text" placeholder="Search candidates" [(ngModel)]="searchTerm" />
+          <select [(ngModel)]="selectedStage">
+            <option value="">All stages</option>
+            <option *ngFor="let stage of stages" [value]="stage">{{ stage }}</option>
+          </select>
+        </div>
+      </div>
+      <div class="candidate-list">
+        <label class="section-title">Candidate List</label>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Title</th>
+              <th>Stage</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let candidate of filteredCandidates()">
+              <td>{{ candidate.name }}</td>
+              <td>{{ candidate.title }}</td>
+              <td><span class="stage-badge">{{ candidate.stage }}</span></td>
+              <td>
+                <ng-container [ngSwitch]="candidate.stage">
+                  <button *ngSwitchCase="'Applied'" class="action-btn">View Profile</button>
+                  <button *ngSwitchCase="'Interview'" class="action-btn">View Profile</button>
+                  <button *ngSwitchCase="'Screening'" class="action-btn dropdown">View ▼</button>
+                  <button *ngSwitchCase="'Offer'" class="action-btn dropdown">Move ▼</button>
+                  <button *ngSwitchDefault class="action-btn">View</button>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="right-panel">
+      <div class="talent-pools">
+        <label class="section-title">Talent Pools</label>
+        <button class="create-btn">+ Create Talent Pool</button>
+        <button class="manage-btn">Manage</button>
+        <div class="sidebar-label">Sidebar for talent pool management</div>
+        <div class="talent-pool-tags">
+          <span class="pool-tag">Engineering</span>
+          <span class="pool-tag">Marketing</span>
+          <span class="pool-tag">Design</span>
+          <span class="pool-tag">Sales</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
+
+
+
+css 
+
+.dashboard-container {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 900px;
+  margin: 32px auto;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboard-title {
+  color: #888;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.dashboard-content {
+  display: flex;
+  gap: 32px;
+}
+
+.left-panel {
+  flex: 2;
+}
+
+.right-panel {
+  flex: 1;
+  border-left: 1px solid #f0f0f0;
+  padding-left: 24px;
+}
+
+.section-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 1.08rem;
+}
+
+.search-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+input[type="text"], select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.candidate-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.candidate-list th, .candidate-list td {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.candidate-list th {
+  background: #f7f7f7;
+  font-weight: 700;
+}
+
+.stage-badge {
+  background: #f0f4fa;
+  color: #375a7f;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.95rem;
+}
+
+.action-btn {
+  background: #f5f7fa;
+  color: #375a7f;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+
+.action-btn.dropdown {
+  background: #e1eaff;
+  color: #2d3a5a;
+}
+
+.talent-pools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-btn {
+  background: #3d7fff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.manage-btn {
+  background: #f5f7fa;
+  color: #375a7f;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.sidebar-label {
+  color: #aaa;
+  font-size: 0.97rem;
+  margin-bottom: 8px;
+}
+
+.talent-pool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pool-tag {
+  background: #f0f4fa;
+  color: #375a7f;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.98rem;
+  font-weight: 500;
+}.dashboard-container {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 900px;
+  margin: 32px auto;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboard-title {
+  color: #888;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.dashboard-content {
+  display: flex;
+  gap: 32px;
+}
+
+.left-panel {
+  flex: 2;
+}
+
+.right-panel {
+  flex: 1;
+  border-left: 1px solid #f0f0f0;
+  padding-left: 24px;
+}
+
+.section-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 1.08rem;
+}
+
+.search-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+input[type="text"], select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.candidate-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.candidate-list th, .candidate-list td {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.candidate-list th {
+  background: #f7f7f7;
+  font-weight: 700;
+}
+
+.stage-badge {
+  background: #f0f4fa;
+  color: #375a7f;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.95rem;
+}
+
+.action-btn {
+  background: #f5f7fa;
+  color: #375a7f;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+
+.action-btn.dropdown {
+  background: #e1eaff;
+  color: #2d3a5a;
+}
+
+.talent-pools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-btn {
+  background: #3d7fff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.manage-btn {
+  background: #f5f7fa;
+  color: #375a7f;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.sidebar-label {
+  color: #aaa;
+  font-size: 0.97rem;
+  margin-bottom: 8px;
+}
+
+.talent-pool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pool-tag {
+  background: #f0f4fa;
+  color: #375a7f;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.98rem;
+  font-weight: 500;
+}.dashboard-container {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 900px;
+  margin: 32px auto;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  font-family: 'Inter', Arial, sans-serif;
+}
+
+.dashboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.dashboard-header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboard-title {
+  color: #888;
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.dashboard-content {
+  display: flex;
+  gap: 32px;
+}
+
+.left-panel {
+  flex: 2;
+}
+
+.right-panel {
+  flex: 1;
+  border-left: 1px solid #f0f0f0;
+  padding-left: 24px;
+}
+
+.section-title {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 12px;
+  font-size: 1.08rem;
+}
+
+.search-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+input[type="text"], select {
+  padding: 6px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.candidate-list table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.candidate-list th, .candidate-list td {
+  padding: 10px 8px;
+  text-align: left;
+}
+
+.candidate-list th {
+  background: #f7f7f7;
+  font-weight: 700;
+}
+
+.stage-badge {
+  background: #f0f4fa;
+  color: #375a7f;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 0.95rem;
+}
+
+.action-btn {
+  background: #f5f7fa;
+  color: #375a7f;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.98rem;
+}
+
+.action-btn.dropdown {
+  background: #e1eaff;
+  color: #2d3a5a;
+}
+
+.talent-pools {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-btn {
+  background: #3d7fff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.manage-btn {
+  background: #f5f7fa;
+  color: #375a7f;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+
+.sidebar-label {
+  color: #aaa;
+  font-size: 0.97rem;
+  margin-bottom: 8px;
+}
+
+.talent-pool-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+ol-tag {
+  background: #f0f4fa;
+  color: #375a7f;
+  border-radius: 6px;
+  padding: 4px 12px;
+  font-size: 0.98rem;
+  font-weight: 500;
+}
+
+
+
+
+ts
+
+
+import { Component } from '@angular/core';
+
+interface Candidate {
+  name: string;
+  title: string;
+  stage: string;
+}
+
+@Component({
+  selector: 'app-hr-manager-dashboard',
+  templateUrl: './hr-manager-dashboard.component.html',
+  styleUrls: ['./hr-manager-dashboard.component.css']
+})
+export class HrManagerDashboardComponent {
+  searchTerm = '';
+  selectedStage = '';
+  stages = ['Applied', 'Interview', 'Screening', 'Offer'];
+
+  candidates: Candidate[] = [
+    { name: 'Jane Doe', title: 'Software Engineer', stage: 'Applied' },
+    { name: 'John Smith', title: 'Product Manager', stage: 'Interview' },
+    { name: 'Alice Johnson', title: 'UX Designer', stage: 'Screening' },
+    { name: 'Bob Brown', title: 'Sales Associate', stage: 'Offer' }
+  ];
+
+  filteredCandidates(): Candidate[] {
+    return this.candidates.filter(candidate => {
+      const matchesSearch = !this.searchTerm ||
+        candidate.name.toLowerCase().includes(this.searchTerm.toLowerCase()) ||
+        candidate.title.toLowerCase().includes(this.searchTerm.toLowerCase());
+      const matchesStage = !this.selectedStage || candidate.stage === this.selectedStage;
+      return matchesSearch && matchesStage;
+    });
+  }
+}
+
+
+
+import { FormsModule } from '@angular/forms';
+
+@NgModule({
+  imports: [
+    // ... other imports
+    FormsModule
+  ],
+  // ... declarations, bootstrap, etc.
+})
+export class AppModule { }
