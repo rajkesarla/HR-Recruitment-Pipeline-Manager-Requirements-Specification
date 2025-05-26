@@ -1,411 +1,318 @@
-{
-  "title": "Backend Engineer",
-  "description": "Develop and maintain RESTful APIs using Spring Boot.",
-  "requirements": "Java, Spring Boot, REST, MySQL",
-  "responsibilities": "Implement backend logic, optimize database queries, and collaborate with frontend team.",
-  "location": "Bangalore",
-  "department": "Engineering",
-  "employmentType": "FULL_TIME",
-  "status": "ACTIVE",
-  "createdBy": {
-    "userId": 1
+recjobpost.html:
+<div class="container">
+  <div class="row">
+    <div class="offset-1 col-10">
+      <br />
+      <h3 class="text-center" id="heading">Create Job Posting</h3>
+      <br />
+
+      <div class="row">
+        <div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 offset-1 col-10 formBlock">
+          <form [formGroup]="jobPostingForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Job Title -->
+            <div class="form-group">
+              <label for="jobTitle">Job Title</label>
+              <input type="text" id="jobTitle" class="form-control" formControlName="title" placeholder="Enter Job Title">
+              <span class="text-danger" *ngIf="jobPostingForm.controls['title'].invalid && (jobPostingForm.controls['title'].dirty || jobPostingForm.controls['title'].touched)">
+                Job title is required.
+              </span>
+            </div>
+
+            <!-- Job Description -->
+            <div class="form-group">
+              <label for="jobDescription">Job Description</label>
+              <textarea id="jobDescription" class="form-control" formControlName="description" rows="3" placeholder="Enter Job Description"></textarea>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['description'].invalid && (jobPostingForm.controls['description'].dirty || jobPostingForm.controls['description'].touched)">
+                Job description is required.
+              </span>
+            </div>
+
+            <!-- Requirements -->
+            <div class="form-group">
+              <label for="requirements">Requirements</label>
+              <textarea id="requirements" class="form-control" formControlName="requirements" rows="3" placeholder="Enter Job Requirements"></textarea>
+            </div>
+
+            <!-- Responsibilities -->
+            <div class="form-group">
+              <label for="responsibilities">Responsibilities</label>
+              <textarea id="responsibilities" class="form-control" formControlName="responsibilities" rows="3" placeholder="Enter the Job Responsibilites"></textarea>
+            </div>
+
+            <!-- Department -->
+            <div class="form-group">
+              <label for="department">Department</label>
+              <select id="department" class="form-control" formControlName="department">
+                <option value="">Choose department</option>
+                <option value="HR">HR</option>
+                <option value="Engineering">Engineering</option>
+                <option value="Sales">Sales</option>
+                <option value="Marketing">Marketing</option>
+              </select>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['department'].invalid && (jobPostingForm.controls['department'].dirty || jobPostingForm.controls['department'].touched)">
+                Please select a department.
+              </span>
+            </div>
+
+            <!-- Job Location -->
+            <div class="form-group">
+              <label for="jobLocation">Job Location</label>
+              <input type="text" id="jobLocation" class="form-control" formControlName="location" placeholder="Enter Job-Location">
+              <span class="text-danger" *ngIf="jobPostingForm.controls['location'].invalid && (jobPostingForm.controls['location'].dirty || jobPostingForm.controls['location'].touched)">
+                Job location is required.
+              </span>
+            </div>
+
+            <!-- Employment Type -->
+            <div class="form-group">
+              <label for="employmentType">Employment Type</label>
+              <select id="employmentType" class="form-control" formControlName="employment_type">
+                <option value="">Select type</option>
+                <option value="FULL_TIME">Full-Time</option>
+                <option value="PART_TIME">Part-Time</option>
+                <option value="CONTRACT">Contract</option>
+                <option value="INTERN">Internship</option>
+              </select>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['employment_type'].invalid && (jobPostingForm.controls['employment_type'].dirty || jobPostingForm.controls['employment_type'].touched)">
+                Please select employment type.
+              </span>
+            </div>
+
+            <!-- Job Status -->
+            <div class="form-group">
+              <label for="jobStatus">Job Posting Status</label>
+              <select id="jobStatus" class="form-control" formControlName="status">
+                <option value="">Select status</option>
+                <option value="ACTIVE">Active</option>
+                <option value="INACTIVE">Inactive</option>
+              </select>
+              <span class="text-danger" *ngIf="jobPostingForm.controls['status'].invalid && (jobPostingForm.controls['status'].dirty || jobPostingForm.controls['status'].touched)">
+                Please select a status.
+              </span>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="form-group">
+              <button type="submit" class="btn btn-danger" [disabled]="jobPostingForm.invalid || jobPostingForm.pristine">Submit</button>
+            </div>
+          </form>
+
+          <span *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</span>
+          <span *ngIf="successMessage" class="text-success">{{ successMessage }}</span>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+recjobpost.css:
+/* Base Container */
+.container {
+  padding: 20px 20px;
+  
+  border-radius: 12px;
+ 
+}
+
+/* Section Title */
+h3.text-center {
+  font-weight: 700;
+  color: #ff4f4f; /* Softer red for modern look */
+  font-size: 30px;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+/* Form Block */
+.formBlock {
+    background-color: white;
+    padding: 40px 35px;
+    border-radius: 15px;
+    box-shadow: 10px 16px 30px rgba(0, 0, 0, 0.2); /* Soft, deeper shadow for depth */
+    color: #000000;
+    max-width: 550px;
+    margin: 0 auto;
+    width: 100%;
+    transition: all 0.3s ease; /* Smooth transition on hover */
+    border: 5px solid #f1f1f1; /* Smooth transition on hover */
+}
+#heading{
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1e3a8a; /* Indigo-800 */
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+/* Form Group Styling */
+.form-group {
+  margin-bottom: 25px;
+}
+
+/* Label Styling */
+label {
+  font-weight: 600;
+  color: #444444; /* Lighter label color for a more elegant look */
+  margin-bottom: 10px;
+  display: block;
+  font-size: 16px;
+  font-family: sans-serif;
+}
+
+/* Input, Textarea, Select Styling */
+input[type="text"],
+textarea,
+select {
+  width: 100%;
+  padding: 15px 18px;
+  border: 2px solid #9fb7e2;
+  background-color: rgb(244, 247, 248);
+  border-radius: 10px;
+  font-size: 16px;
+  color: #333;
+  box-sizing: border-box;
+  transition: all 0.3s ease-in-out; /* Smooth transition on focus */
+  box-shadow: 5px 8px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Focus States for Inputs */
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: #ff4f4f;
+  box-shadow: 0 0 8px rgba(255, 79, 79, 0.6); /* Glowing red focus */
+  outline: none;
+  background-color: #fff; /* Slight background change for clarity */
+}
+
+/* Button Styling */
+button[type="submit"] {
+  background-color: #ff4f4f;
+  color: white;
+  border: none;
+  padding: 15px 25px;
+  font-size: 16px;
+  border-radius: 6px;
+  transition: background-color 0.3s, transform 0.3s;
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Deep shadow for the button */
+  width: 100%;
+}
+
+button[type="submit"]:hover {
+  background-color: #3eb648;
+  transform: scale(1.05); /* Slight zoom effect on hover */
+}
+
+button[type="submit"]:disabled {
+  
+  background-color: #1953cf;
+  color: white;
+  cursor: not-allowed;
+}
+
+/* Validation Messages */
+/* Validation Messages */
+.text-danger {
+  color: #ffffff; /* Dark Red */
+  font-size: 14px;
+  margin-top: 8px;
+  display: block;
+  font-weight: 600;
+}
+
+.text-success {
+  color: #28a745;
+  font-size: 14px;
+  margin-top: 10px;
+  display: block;
+  font-weight: 600;
+}
+
+/* Hover Effect on Form Block */
+.formBlock:hover {
+  transform: scale(1.02); /* Smooth zoom effect when hovering over the form block */
+}
+
+/* Responsive Design Adjustments */
+@media (max-width: 768px) {
+  .formBlock {
+    padding: 30px 20px;
+  }
+
+  h3.text-center {
+    font-size: 26px; /* Slightly smaller text for small screens */
+  }
+
+  button[type="submit"] {
+    padding: 12px 20px; /* Adjust button size on mobile */
   }
 }
 
-import org.springframework.web.bind.annotation.*;
-@CrossOrigin(origins = "http://localhost:4200") 
-@RestController
-@RequestMapping(value="/job")
-@Validated
+recjobpost.component.ts:
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JobpostService } from './jobpost.service';  // Make sure this service exists
 
-public class JobPostingAPI {
-	@Autowired
-    private JobPostingService jobPostingService;
+@Component({
+  selector: 'app-recjobpost',
+  templateUrl: './recjobpost.component.html',
+  styleUrls: ['./recjobpost.component.css']
+})
+export class RecjobpostComponent implements OnInit {
+  jobPostingForm!: FormGroup;
+  successMessage: string = '';
+  errorMessage: string = '';
 
-    @Autowired
-    private Environment environment;
+  constructor(
+    private fb: FormBuilder,
+    private jobpostService: JobpostService // Ensure you have the service created
+  ) {}
 
-    /*
-     * REST controller method to create and post a new job opening.
-     * Accepts job posting details in the HTTP request body.
-     * Invokes the createJobPosting() method of JobPostingService.
-     * Returns a ResponseEntity with the generated job ID and HTTP status CREATED.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @PostMapping(value = "/jobpost")
-    public ResponseEntity<JobPostingDTO> createJob(@RequestBody JobPostingDTO jobPostingDTO) throws hrpipelinemanagerException {
-        JobPosting jobPosting = jobPostingService.createJob(jobPostingDTO);
+  ngOnInit(): void {
+    this.jobPostingForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      requirements: [''],
+      responsibilities: [''],
+      department: ['', Validators.required],
+      location: ['', Validators.required],
+      employment_type: ['', Validators.required],
+      status: ['', Validators.required]
+    });
+  }
 
-        // Convert Entity back to DTO to return to frontend
-        JobPostingDTO responseDTO = new JobPostingDTO(jobPosting);
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-    }
-
-    /*
-     * REST controller method to retrieve all active job postings.
-     * Invokes the getAllActiveJobPostings() method of JobPostingService.
-     * Returns a ResponseEntity with a list of active JobPostingDTOs and HTTP status OK.
-     * If no active job postings are found, it returns a ResponseEntity with HTTP status NO_CONTENT.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @GetMapping(value = "/active")
-    public ResponseEntity<List<JobPostingDTO>> getAllActiveJobPostings() throws hrpipelinemanagerException {
-        List<JobPostingDTO> activeJobPostings = jobPostingService.getAllActiveJobPostings();
-        if (activeJobPostings.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+  onSubmit(): void {
+    if (this.jobPostingForm.valid) {
+      this.jobpostService.createJobPost(this.jobPostingForm.value).subscribe(
+        response => {
+          this.successMessage = 'Job posted successfully!';
+          this.errorMessage = '';
+          this.jobPostingForm.reset();
+        },
+        error => {
+          this.errorMessage = 'Error posting job.';
+          this.successMessage = '';
+          console.error(error);
         }
-        return new ResponseEntity<>(activeJobPostings, HttpStatus.OK);
+      );
     }
-
-    /*
-     * REST controller method to retrieve a job posting by its ID.
-     * Accepts jobId as a path variable.
-     * Invokes the getJobPostingById() method of JobPostingService.
-     * Returns a ResponseEntity with the JobPostingDTO and HTTP status OK if found.
-     * If the job posting is not found, it returns a ResponseEntity with HTTP status NOT_FOUND.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @GetMapping(value = "/{jobId}")
-    public ResponseEntity<JobPostingDTO> getJobPostingById(@PathVariable Long jobId) throws hrpipelinemanagerException {
-        JobPostingDTO jobPosting = jobPostingService.getJobPostingById(jobId);
-        return new ResponseEntity<>(jobPosting, HttpStatus.OK);
-    }
-
-    /*
-     * REST controller method to update an existing job posting.
-     * Accepts jobId as a path variable and updated job posting details in the HTTP request body.
-     * Invokes the updateJobPosting() method of JobPostingService.
-     * Returns a ResponseEntity with a success message and HTTP status OK.
-     * If the job posting is not found, it returns a ResponseEntity with HTTP status NOT_FOUND.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @PutMapping(value = "/{jobId}")
-    public ResponseEntity<String> updateJobPosting(@PathVariable Long jobId, @RequestBody JobPostingDTO jobPostingDTO) throws hrpipelinemanagerException {
-        jobPostingService.updateJobPosting(jobId, jobPostingDTO);
-        String successMessage = environment.getProperty("API.JOB_POSTING_UPDATED");
-        return new ResponseEntity<>(successMessage, HttpStatus.OK);
-    } 
-    
-    }
-package com.infy.hrpipelinemanager.entity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.Table;
-import lombok.Data;
-
-import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
-
-import java.sql.Timestamp;
-
-@Entity
-@Table(name = "job_postings")
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class JobPosting {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long jobId;
-
-    @Column(nullable = false)
-    private String title;
-
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String description;
-
-    @Column(columnDefinition = "TEXT")
-    private String requirements;
-
-    @Column(columnDefinition = "TEXT")
-    private String responsibilities;
-
-    private String location;
-
-    private String department;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private EmploymentType employmentType;
-
-    @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
-    
-    @PrePersist
-    public void setDefault()
-    {
-    	if(status==null)
-    	{
-    		status=status.ACTIVE;
-    	}
-    }
-    
-
-    @ManyToOne
-    @JoinColumn(name = "created_by")
-    private User createdBy;
-
-    @CreationTimestamp
-    private Timestamp createdAt;
-   
+  }
 }
 
+jobservice.ts:
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
------------------------------------------------------------------------------------------------------
-DROP SCHEMA IF EXISTS job_portal;
-CREATE SCHEMA job_portal;
-USE job_portal;
+@Injectable({
+  providedIn: 'root'
+})
+export class JobpostService {
+  constructor(private http: HttpClient) {}
 
--- USERS TABLE
-CREATE TABLE users (
-    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
-    email VARCHAR(150) UNIQUE NOT NULL,
-    full_name VARCHAR(150),
-    role ENUM('HR_RECRUITER', 'HR_MANAGER', 'SYSTEM_ADMIN', 'HIRING_MANAGER', 'INTERVIEWER', 'CANDIDATE', 'HR_EXECUTIVE') NOT NULL,
-    status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
-    mfa_enabled BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
--- JOB POSTINGS TABLE
-CREATE TABLE job_postings (
-    job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    requirements TEXT,
-    responsibilities TEXT,
-    location VARCHAR(100),
-    department VARCHAR(100),
-    employment_type ENUM('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN') NOT NULL,
-    status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
-    created_by BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-);
-
--- CANDIDATES TABLE
-CREATE TABLE candidates (
-    candidate_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT UNIQUE,
-    name VARCHAR(150) NOT NULL,
-    resume TEXT,
-    cover_letter TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
--- APPLICATIONS TABLE
-CREATE TABLE applications (
-    application_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    candidate_id BIGINT NOT NULL,
-    job_id BIGINT NOT NULL,
-    resume_url TEXT,
-    cover_letter_url TEXT,
-    status ENUM('APPLIED', 'REVIEWED', 'INTERVIEW_SCHEDULED', 'INTERVIEWED', 'OFFERED', 'REJECTED', 'HIRED', 'WITHDRAWN') NOT NULL DEFAULT 'APPLIED',
-    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    first_name VARCHAR(100),
-    last_name VARCHAR(100),
-    email VARCHAR(150) UNIQUE,
-    date_of_birth DATE,
-    phone_number VARCHAR(20),
-    address VARCHAR(255),
-    college_name VARCHAR(255),
-    tenth_percentage DECIMAL(5, 2),
-    twelfth_percentage DECIMAL(5, 2),
-    graduation_cgpa DECIMAL(4, 2),
-    post_graduation_cgpa DECIMAL(4, 2),
-    passed_out_year INT,
-    backlog_history TEXT,
-    skills TEXT,
-    projects TEXT,
-    course VARCHAR(255),
-    specialization VARCHAR(255),
-    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
-    FOREIGN KEY (job_id) REFERENCES job_postings(job_id)
-);
-
--- INTERVIEWS TABLE
-CREATE TABLE interviews (
-    interview_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    application_id BIGINT NOT NULL UNIQUE,
-    interview_datetime DATETIME NOT NULL,
-    interview_type ENUM('PHONE', 'VIDEO', 'IN_PERSON') NOT NULL,
-    location_or_link TEXT,
-    status ENUM('SCHEDULED', 'COMPLETED', 'CANCELLED') DEFAULT 'SCHEDULED',
-    intviewer_email VARCHAR(150) UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (application_id) REFERENCES applications(application_id)
-);
-
--- INTERVIEWERS TABLE
-CREATE TABLE interviewers (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    interview_id BIGINT NOT NULL,
-    interviewer_id BIGINT NOT NULL,
-    FOREIGN KEY (interview_id) REFERENCES interviews(interview_id),
-    FOREIGN KEY (interviewer_id) REFERENCES users(user_id),
-    UNIQUE(interview_id, interviewer_id)
-);
-
--- INTERVIEW FEEDBACK TABLE
-CREATE TABLE interview_feedback (
-    feedback_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    interview_id BIGINT NOT NULL,
-    reviewer_id BIGINT NOT NULL,
-    rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
-    comments TEXT,
-    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(interview_id, reviewer_id),
-    FOREIGN KEY (interview_id) REFERENCES interviews(interview_id),
-    FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
-);
-
--- CANDIDATE NOTES TABLE
-CREATE TABLE candidate_notes (
-    note_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    candidate_id BIGINT NOT NULL,
-    added_by BIGINT,
-    note TEXT,
-    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
-    FOREIGN KEY (added_by) REFERENCES users(user_id)
-);
-
--- EMAIL TEMPLATES TABLE
-CREATE TABLE email_templates (
-    template_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    type ENUM('ACKNOWLEDGEMENT', 'STATUS_UPDATE', 'INTERVIEW_INVITE', 'FEEDBACK', 'GENERIC') NOT NULL,
-    subject VARCHAR(255),
-    body TEXT,
-    created_by BIGINT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (created_by) REFERENCES users(user_id)
-);
-
--- ONBOARDING DOCUMENTS TABLE
-CREATE TABLE onboarding_documents (
-    document_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    candidate_id BIGINT NOT NULL,
-    document_name VARCHAR(255),
-    document_url TEXT,
-    signed BOOLEAN DEFAULT FALSE,
-    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
-);
-
--- AUDIT LOG TABLE
-CREATE TABLE audit_log (
-    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    user_id BIGINT,
-    action_type VARCHAR(100),
-    description TEXT,
-    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
--- TALENT POOL TABLE
-CREATE TABLE talent_pool (
-    pool_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    candidate_id BIGINT NOT NULL,
-    tags TEXT,
-    source VARCHAR(100),
-    reengagement_status ENUM('NOT_CONTACTED', 'CONTACTED', 'INTERESTED', 'NOT_INTERESTED') DEFAULT 'NOT_CONTACTED',
-    last_contacted_at TIMESTAMP NULL,
-    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
-);
-
--- APPLICATION STATUS HISTORY TABLE
-CREATE TABLE application_status_history (
-    history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    application_id BIGINT NOT NULL,
-    previous_status VARCHAR(50),
-    new_status VARCHAR(50),
-    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    changed_by BIGINT,
-    FOREIGN KEY (application_id) REFERENCES applications(application_id),
-    FOREIGN KEY (changed_by) REFERENCES users(user_id)
-);
-
--- USERS
-INSERT INTO users (username, password_hash, email, full_name, role)
-VALUES 
-('john.hr', 'hashed_password_1', 'john.hr@example.com', 'John HR', 'HR_RECRUITER'),
-('alice.manager', 'hashed_password_2', 'alice.manager@example.com', 'Alice Manager', 'HR_MANAGER'),
-('candidate123', 'hashed_password_3', 'jane.candidate@example.com', 'Jane Candidate', 'CANDIDATE');
-
--- JOB POSTINGS
-INSERT INTO job_postings (title, description, requirements, responsibilities, location, department, employment_type, created_by)
-VALUES 
-('Software Developer', 'Develop enterprise-grade applications.', 'B.Tech in CS, 2+ years experience, Java, Spring Boot', 'Design, develop and maintain software solutions', 'Bangalore', 'Engineering', 'FULL_TIME', 1),
-('Data Analyst Intern', 'Support analytics and reporting projects.', 'Pursuing B.Sc./B.Tech, knowledge of SQL and Python', 'Assist in generating reports and dashboards', 'Hyderabad', 'Data Science', 'INTERN', 1);
-
--- CANDIDATES
-INSERT INTO candidates (user_id, name, resume, cover_letter)
-VALUES 
-(3, 'Jane Candidate', 'Link_to_Resume.pdf', 'Link_to_Cover_Letter.pdf');
-
--- APPLICATIONS
-INSERT INTO applications (
-    candidate_id, job_id, resume_url, cover_letter_url, first_name, last_name, email,
-    date_of_birth, phone_number, address, college_name, tenth_percentage,
-    twelfth_percentage, graduation_cgpa, post_graduation_cgpa, passed_out_year,
-    backlog_history, skills, projects, course, specialization
-)
-VALUES (
-    1, 1, 'http://example.com/resume.pdf', 'http://example.com/coverletter.pdf',
-    'Jane', 'Doe', 'jane.candidate@example.com', '1999-06-15', '9876543210',
-    '123 Park Street, Bangalore', 'IIT Delhi', 89.5, 91.0, 8.5, NULL, 2021,
-    'No backlogs', 'Java, Spring Boot, MySQL', 'E-commerce System, Chat App',
-    'B.Tech', 'Computer Science'
-);
-
--- INTERVIEWS
-INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link, intviewer_email)
-VALUES (1, '2025-06-01 10:00:00', 'VIDEO', 'https://meet.example.com/interview1', 'interviewer@example.com');
-
--- INTERVIEWERS
-INSERT INTO interviewers (interview_id, interviewer_id)
-VALUES (1, 1);
-
--- INTERVIEW FEEDBACK
-INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
-VALUES (1, 1, 4, 'Good problem-solving skills, needs improvement in system design.');
-
--- CANDIDATE NOTES
-INSERT INTO candidate_notes (candidate_id, added_by, note)
-VALUES (1, 1, 'Candidate showed great enthusiasm and communication.');
-
--- EMAIL TEMPLATES
-INSERT INTO email_templates (name, type, subject, body, created_by)
-VALUES ('Interview Invitation', 'INTERVIEW_INVITE', 'Interview Scheduled', 'Dear [Name], your interview is scheduled for [Date] at [Time].', 2);
-
--- ONBOARDING DOCUMENTS
-INSERT INTO onboarding_documents (candidate_id, document_name, document_url)
-VALUES (1, 'Offer Letter', 'http://example.com/offer_letter.pdf');
-
--- AUDIT LOG
-INSERT INTO audit_log (user_id, action_type, description)
-VALUES (1, 'CREATE_JOB', 'Created Software Developer job posting.');
-
--- TALENT POOL
-INSERT INTO talent_pool (candidate_id, tags, source)
-VALUES (1, 'Java, Spring Boot, Top College', 'LinkedIn');
-
--- APPLICATION STATUS HISTORY
-INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
-VALUES (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
+  createJobPost(jobpost: any): Observable<any> {
+    return this.http.post("http://localhost:8080/job/jobpost", jobpost);
+  }
+}
