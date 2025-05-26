@@ -573,3 +573,34 @@ import { FormsModule } from '@angular/forms';
   // ... declarations, bootstrap, etc.
 })
 export class AppModule { }
+
+
+
+forgot password html
+
+<!-- Forgot Password Modal -->
+<div class="modal" *ngIf="showForgotPasswordModal">
+  <div class="modal-content">
+    <span class="close" (click)="closeModal()">&times;</span>
+    <h2>Reset Password</h2>
+    <form (ngSubmit)="submitForgotPasswordForm()" [formGroup]="forgotPasswordForm">
+      <div class="form-group">
+        <label for="otp">OTP</label>
+        <input type="text" id="otp" formControlName="otp" class="form-control" placeholder="Enter OTP" />
+      </div>
+      <div class="form-group">
+        <label for="newPassword">New Password</label>
+        <input type="password" id="newPassword" formControlName="newPassword" class="form-control" placeholder="New Password" />
+      </div>
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input type="password" id="confirmPassword" formControlName="confirmPassword" class="form-control" placeholder="Confirm Password" />
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
+
+
+
+
