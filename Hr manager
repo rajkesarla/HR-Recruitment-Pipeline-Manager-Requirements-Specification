@@ -1,7 +1,10 @@
 ng generate module dashboard --routing
-ng generate component dashboard/dashboard
+ng generate component dashboard/overview
 ng generate component dashboard/job-postings
 ng generate component dashboard/candidate-pipeline
+ng generate component dashboard/interview-scheduling
+ng generate component dashboard/onboarding
+ng generate component dashboard/analytics
 
 
 
