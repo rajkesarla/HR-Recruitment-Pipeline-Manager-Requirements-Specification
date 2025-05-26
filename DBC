@@ -378,3 +378,106 @@ VALUES
   "status": "ACTIVE",
   "createdBy": 1
 }
+-----------------------------------------------------------------------------------------------------------------------------
+-- Sample Users
+mysql> INSERT INTO users (username, password_hash, email, full_name, role)
+    -> VALUES
+    -> ('recruiter1', 'hashed_pw1', 'recruiter1@example.com', 'Alice HR', 'HR_RECRUITER'),
+    -> ('manager1', 'hashed_pw2', 'manager1@example.com', 'Bob Manager', 'HR_MANAGER'),
+    -> ('admin1', 'hashed_pw3', 'admin1@example.com', 'Charlie Admin', 'SYSTEM_ADMIN'),
+    -> ('candidate1', 'hashed_pw4', 'candidate1@example.com', 'David Candidate', 'CANDIDATE');
+Query OK, 4 rows affected (0.12 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Sample Job Postings
+mysql> INSERT INTO job_postings (title, description, requirements, responsibilities, location, department, employment_type, status, created_by)
+    -> VALUES
+    -> ('Java Developer', 'Backend services with Spring Boot', 'Java, Spring Boot, REST', 'Develop and maintain backend services', 'Bangalore', 'Engineering', 'FULL_TIME', 'ACTIVE', 1),
+    -> ('Frontend Developer', 'UI with Angular', 'Angular, TypeScript, HTML, CSS', 'Build frontend modules', 'Hyderabad', 'Engineering', 'FULL_TIME', 'ACTIVE', 1);
+Query OK, 2 rows affected (0.01 sec)
+Records: 2  Duplicates: 0  Warnings: 0
+
+mysql>
+mysql> -- Sample Candidate
+mysql> INSERT INTO candidates (user_id, name, resume, cover_letter)
+    -> VALUES
+    -> (4, 'David Candidate', 'Resume content here...', 'Cover letter content here...');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> -- Sample Application
+mysql> INSERT INTO applications (
+    ->     candidate_id, job_id, status, resume_url, cover_letter_url,
+    ->     first_name, last_name, email, date_of_birth, phone_number,
+    ->     address, college_name, tenth_percentage, twelfth_percentage,
+    ->     graduation_cgpa, post_graduation_cgpa, passed_out_year,
+    ->     backlog_history, skills, projects, course, specialization
+    -> ) VALUES (
+    ->     1, 1, 'APPLIED', 'http://resumes.com/resume1.pdf', 'http://letters.com/cover1.pdf',
+    ->     'David', 'Candidate', 'candidate1@example.com', '1998-07-15', '9876543210',
+    ->     '123 Main St, Bangalore', 'ABC College', 88.5, 91.2, 8.3, 8.0, 2020,
+    ->     'No backlogs', 'Java, Spring, SQL', 'Job Portal, E-commerce', 'B.Tech', 'Computer Science'
+    -> );
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '    candidate_id, job_id, status, resume_url, cover_letter_url,
+    first_na' at line 2
+mysql>
+mysql> -- Sample Interview
+mysql> INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link)
+    -> VALUES
+    -> (1, '2025-06-01 10:30:00', 'VIDEO', 'https://meet.example.com/interview1');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`interviews`, CONSTRAINT `interviews_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `applications` (`application_id`))
+mysql>
+mysql> -- Sample Interviewer
+mysql> INSERT INTO interviewers (interview_id, interviewer_id)
+    -> VALUES
+    -> (1, 2);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`interviewers`, CONSTRAINT `interviewers_ibfk_1` FOREIGN KEY (`interview_id`) REFERENCES `interviews` (`interview_id`))
+mysql>
+mysql> -- Interview Feedback
+mysql> INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
+    -> VALUES
+    -> (1, 2, 4, 'Candidate shows strong backend development skills.');
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`interview_feedback`, CONSTRAINT `interview_feedback_ibfk_1` FOREIGN KEY (`interview_id`) REFERENCES `interviews` (`interview_id`))
+mysql>
+mysql> -- Candidate Notes
+mysql> INSERT INTO candidate_notes (candidate_id, added_by, note)
+    -> VALUES
+    -> (1, 1, 'Candidate showed interest in full-time backend roles.');
+Query OK, 1 row affected (0.02 sec)
+
+mysql>
+mysql> -- Email Template
+mysql> INSERT INTO email_templates (name, type, subject, body, created_by)
+    -> VALUES
+    -> ('Interview Invite', 'INTERVIEW_INVITE', 'Interview Scheduled', 'Dear [Name], your interview is scheduled on [Date].', 1);
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> -- Onboarding Document
+mysql> INSERT INTO onboarding_documents (candidate_id, document_name, document_url)
+    -> VALUES
+    -> (1, 'Offer Letter', 'http://docs.example.com/offer1.pdf');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> -- Audit Log
+mysql> INSERT INTO audit_log (user_id, action_type, description)
+    -> VALUES
+    -> (1, 'CREATE_JOB', 'Created job posting for Java Developer.');
+Query OK, 1 row affected (0.02 sec)
+
+mysql>
+mysql> -- Talent Pool
+mysql> INSERT INTO talent_pool (candidate_id, tags, source)
+    -> VALUES
+    -> (1, 'Java, Spring, Backend', 'LinkedIn');
+Query OK, 1 row affected (0.01 sec)
+
+mysql>
+mysql> -- Application Status History
+mysql> INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
+    -> VALUES
+    -> (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
+ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`application_status_history`, CONSTRAINT `application_status_history_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `applications` (`application_id`))
+
