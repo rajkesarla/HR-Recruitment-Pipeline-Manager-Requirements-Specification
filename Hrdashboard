@@ -693,4 +693,51 @@ css
 
 
 
+.ts
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-forgotpassword',
+  templateUrl: './forgotpassword.component.html',
+  styleUrls: ['./forgotpassword.component.css']
+})
+export class ForgotpasswordComponent implements OnInit {
+  forgotForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.forgotForm = this.fb.group({
+      otp: ['', Validators.required],
+      newPassword: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required]
+    });
+  }
+
+  ngOnInit(): void {}
+
+  submitForgotPasswordForm() {
+    if (this.forgotForm.invalid) {
+      alert('Please fill out all fields correctly.');
+      return;
+    }
+
+    const { newPassword, confirmPassword } = this.forgotForm.value;
+
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match.');
+      return;
+    }
+
+    // Submit the form data
+    console.log('Reset Password Data:', this.forgotForm.value);
+    alert('Password reset successful!');
+    
+    // You can also reset the form
+    this.forgotForm.reset();
+  }
+}
+
+
+
 
