@@ -1,0 +1,57 @@
+<div [formGroup]="candidatesForm">
+  <div formArrayName="candidates">
+    <div *ngFor="let candidate of candidatesArray.controls; let i = index" [formGroupName]="i" class="candidate-card">
+      <p><strong>ID:</strong> {{ candidate.value.id }}</p>
+      <p><strong>Name:</strong> {{ candidate.value.name }}</p>
+      <p><strong>Job Role:</strong> {{ candidate.value.role }}</p>
+      <p><strong>Status:</strong> {{ candidate.value.status }}</p>
+      <hr />
+    </div>
+  </div>
+</div>
+
+import { Component, OnInit } from '@angular/core';
+import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
+
+@Component({
+  selector: 'app-hmprofile',
+  templateUrl: './hmprofile.component.html',
+  styleUrls: ['./hmprofile.component.css']
+})
+export class HmprofileComponent implements OnInit {
+  candidatesForm: FormGroup;
+
+  constructor(private fb: FormBuilder) {
+    this.candidatesForm = this.fb.group({
+      candidates: this.fb.array([])
+    });
+  }
+
+  ngOnInit(): void {
+    // Dummy data — this would typically come from a service
+    const candidateData = [
+      { id: 'C001', name: 'Alice Smith', role: 'Software Engineer', status: 'Interview Scheduled' },
+      { id: 'C002', name: 'Bob Johnson', role: 'QA Analyst', status: 'Shortlisted' },
+      { id: 'C003', name: 'Charlie Lee', role: 'UX Designer', status: 'Final Review' }
+    ];
+
+    candidateData.forEach(candidate => {
+      this.candidatesArray.push(this.fb.group({
+        id: [candidate.id],
+        name: [candidate.name],
+        role: [candidate.role],
+        status: [candidate.status]
+      }));
+    });
+  }
+
+  get candidatesArray(): FormArray {
+    return this.candidatesForm.get('candidates') as FormArray;
+  }
+}
+.candidate-card {
+  background: #f5f5f5;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+}
