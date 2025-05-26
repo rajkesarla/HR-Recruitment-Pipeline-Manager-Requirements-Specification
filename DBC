@@ -1,3 +1,42 @@
+-- Insert Application (ensure this runs first)
+INSERT INTO applications (
+    candidate_id, job_id, status, resume_url, cover_letter_url,
+    first_name, last_name, email, date_of_birth, phone_number,
+    address, college_name, tenth_percentage, twelfth_percentage,
+    graduation_cgpa, post_graduation_cgpa, passed_out_year,
+    backlog_history, skills, projects, course, specialization
+) VALUES (
+    1, 1, 'APPLIED', 'http://resumes.com/resume1.pdf', 'http://letters.com/cover1.pdf',
+    'David', 'Candidate', 'candidate1@example.com', '1998-07-15', '9876543210',
+    '123 Main St, Bangalore', 'ABC College', 88.5, 91.2, 8.3, 8.0, 2020,
+    'No backlogs', 'Java, Spring, SQL', 'Job Portal, E-commerce', 'B.Tech', 'Computer Science'
+);
+
+-- Insert Interview (application_id = 1)
+INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link)
+VALUES (1, '2025-06-01 10:30:00', 'VIDEO', 'https://meet.example.com/interview1');
+
+-- Insert Interviewer (interview_id = 1, interviewer_id = 2)
+INSERT INTO interviewers (interview_id, interviewer_id)
+VALUES (1, 2);
+
+-- Insert Interview Feedback
+INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
+VALUES (1, 2, 4, 'Candidate shows strong backend development skills.');
+
+-- Insert Application Status History
+INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
+VALUES (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
+
+
+
+
+
+
+
+
+
+
 @CrossOrigin(origins = "http://localhost:4200") 
 @RestController
 @RequestMapping(value="/job")
