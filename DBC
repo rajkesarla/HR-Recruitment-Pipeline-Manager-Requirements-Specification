@@ -1,29 +1,21 @@
-<<<<<<< HEAD
-
-=======
-drop schema if exists job_portal;
+DROP SCHEMA IF EXISTS job_portal;
 CREATE SCHEMA job_portal;
 USE job_portal;
->>>>>>> branch 'main' of http://myslab42s08:3000/Feb25-SET-Interns1-CS-Java-Angular-A/group-14-backend.git
 
--- ===================
 -- USERS TABLE
--- ===================
 CREATE TABLE users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     email VARCHAR(150) UNIQUE NOT NULL,
     full_name VARCHAR(150),
-    role ENUM('HR_RECRUITER', 'HR_MANAGER', 'SYSTEM_ADMIN', 'HIRING_MANAGER','INTERVIEWER', 'CANDIDATE','HR_EXECUTIVE') NOT NULL,
+    role ENUM('HR_RECRUITER', 'HR_MANAGER', 'SYSTEM_ADMIN', 'HIRING_MANAGER', 'INTERVIEWER', 'CANDIDATE', 'HR_EXECUTIVE') NOT NULL,
     status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
     mfa_enabled BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ===================
 -- JOB POSTINGS TABLE
--- ===================
 CREATE TABLE job_postings (
     job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -39,9 +31,7 @@ CREATE TABLE job_postings (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
--- ===================
 -- CANDIDATES TABLE
--- ===================
 CREATE TABLE candidates (
     candidate_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNIQUE,
@@ -52,11 +42,7 @@ CREATE TABLE candidates (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
-
-
--- ===================
 -- APPLICATIONS TABLE
--- ===================
 CREATE TABLE applications (
     application_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -75,7 +61,7 @@ CREATE TABLE applications (
     college_name VARCHAR(255),
     tenth_percentage DECIMAL(5, 2),
     twelfth_percentage DECIMAL(5, 2),
-    graduation_cgpa DECIMAL(4, 2),z
+    graduation_cgpa DECIMAL(4, 2),
     post_graduation_cgpa DECIMAL(4, 2),
     passed_out_year INT,
     backlog_history TEXT,
@@ -87,10 +73,7 @@ CREATE TABLE applications (
     FOREIGN KEY (job_id) REFERENCES job_postings(job_id)
 );
 
-
--- ===================
 -- INTERVIEWS TABLE
--- ===================
 CREATE TABLE interviews (
     interview_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     application_id BIGINT NOT NULL UNIQUE,
@@ -103,10 +86,7 @@ CREATE TABLE interviews (
     FOREIGN KEY (application_id) REFERENCES applications(application_id)
 );
 
-
--- ===================
 -- INTERVIEWERS TABLE
--- ===================
 CREATE TABLE interviewers (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     interview_id BIGINT NOT NULL,
@@ -116,10 +96,7 @@ CREATE TABLE interviewers (
     UNIQUE(interview_id, interviewer_id)
 );
 
-
--- ===================
 -- INTERVIEW FEEDBACK TABLE
--- ===================
 CREATE TABLE interview_feedback (
     feedback_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     interview_id BIGINT NOT NULL,
@@ -132,9 +109,7 @@ CREATE TABLE interview_feedback (
     FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
 );
 
--- ===================
 -- CANDIDATE NOTES TABLE
--- ===================
 CREATE TABLE candidate_notes (
     note_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -145,9 +120,7 @@ CREATE TABLE candidate_notes (
     FOREIGN KEY (added_by) REFERENCES users(user_id)
 );
 
--- ===================
 -- EMAIL TEMPLATES TABLE
--- ===================
 CREATE TABLE email_templates (
     template_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -159,9 +132,7 @@ CREATE TABLE email_templates (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
--- ===================
 -- ONBOARDING DOCUMENTS TABLE
--- ===================
 CREATE TABLE onboarding_documents (
     document_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -172,9 +143,7 @@ CREATE TABLE onboarding_documents (
     FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
 );
 
--- ===================
 -- AUDIT LOG TABLE
--- ===================
 CREATE TABLE audit_log (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
@@ -184,9 +153,7 @@ CREATE TABLE audit_log (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
--- ===================
 -- TALENT POOL TABLE
--- ===================
 CREATE TABLE talent_pool (
     pool_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -197,9 +164,7 @@ CREATE TABLE talent_pool (
     FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
 );
 
--- ===================
 -- APPLICATION STATUS HISTORY TABLE
--- ===================
 CREATE TABLE application_status_history (
     history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     application_id BIGINT NOT NULL,
@@ -210,3 +175,72 @@ CREATE TABLE application_status_history (
     FOREIGN KEY (application_id) REFERENCES applications(application_id),
     FOREIGN KEY (changed_by) REFERENCES users(user_id)
 );
+
+-- USERS
+INSERT INTO users (username, password_hash, email, full_name, role)
+VALUES 
+('john.hr', 'hashed_password_1', 'john.hr@example.com', 'John HR', 'HR_RECRUITER'),
+('alice.manager', 'hashed_password_2', 'alice.manager@example.com', 'Alice Manager', 'HR_MANAGER'),
+('candidate123', 'hashed_password_3', 'jane.candidate@example.com', 'Jane Candidate', 'CANDIDATE');
+
+-- JOB POSTINGS
+INSERT INTO job_postings (title, description, requirements, responsibilities, location, department, employment_type, created_by)
+VALUES 
+('Software Developer', 'Develop enterprise-grade applications.', 'B.Tech in CS, 2+ years experience, Java, Spring Boot', 'Design, develop and maintain software solutions', 'Bangalore', 'Engineering', 'FULL_TIME', 1),
+('Data Analyst Intern', 'Support analytics and reporting projects.', 'Pursuing B.Sc./B.Tech, knowledge of SQL and Python', 'Assist in generating reports and dashboards', 'Hyderabad', 'Data Science', 'INTERN', 1);
+
+-- CANDIDATES
+INSERT INTO candidates (user_id, name, resume, cover_letter)
+VALUES 
+(3, 'Jane Candidate', 'Link_to_Resume.pdf', 'Link_to_Cover_Letter.pdf');
+
+-- APPLICATIONS
+INSERT INTO applications (
+    candidate_id, job_id, resume_url, cover_letter_url, first_name, last_name, email,
+    date_of_birth, phone_number, address, college_name, tenth_percentage,
+    twelfth_percentage, graduation_cgpa, post_graduation_cgpa, passed_out_year,
+    backlog_history, skills, projects, course, specialization
+)
+VALUES (
+    1, 1, 'http://example.com/resume.pdf', 'http://example.com/coverletter.pdf',
+    'Jane', 'Doe', 'jane.candidate@example.com', '1999-06-15', '9876543210',
+    '123 Park Street, Bangalore', 'IIT Delhi', 89.5, 91.0, 8.5, NULL, 2021,
+    'No backlogs', 'Java, Spring Boot, MySQL', 'E-commerce System, Chat App',
+    'B.Tech', 'Computer Science'
+);
+
+-- INTERVIEWS
+INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link, intviewer_email)
+VALUES (1, '2025-06-01 10:00:00', 'VIDEO', 'https://meet.example.com/interview1', 'interviewer@example.com');
+
+-- INTERVIEWERS
+INSERT INTO interviewers (interview_id, interviewer_id)
+VALUES (1, 1);
+
+-- INTERVIEW FEEDBACK
+INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
+VALUES (1, 1, 4, 'Good problem-solving skills, needs improvement in system design.');
+
+-- CANDIDATE NOTES
+INSERT INTO candidate_notes (candidate_id, added_by, note)
+VALUES (1, 1, 'Candidate showed great enthusiasm and communication.');
+
+-- EMAIL TEMPLATES
+INSERT INTO email_templates (name, type, subject, body, created_by)
+VALUES ('Interview Invitation', 'INTERVIEW_INVITE', 'Interview Scheduled', 'Dear [Name], your interview is scheduled for [Date] at [Time].', 2);
+
+-- ONBOARDING DOCUMENTS
+INSERT INTO onboarding_documents (candidate_id, document_name, document_url)
+VALUES (1, 'Offer Letter', 'http://example.com/offer_letter.pdf');
+
+-- AUDIT LOG
+INSERT INTO audit_log (user_id, action_type, description)
+VALUES (1, 'CREATE_JOB', 'Created Software Developer job posting.');
+
+-- TALENT POOL
+INSERT INTO talent_pool (candidate_id, tags, source)
+VALUES (1, 'Java, Spring Boot, Top College', 'LinkedIn');
+
+-- APPLICATION STATUS HISTORY
+INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
+VALUES (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
