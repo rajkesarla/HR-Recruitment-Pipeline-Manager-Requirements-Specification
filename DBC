@@ -366,3 +366,15 @@ VALUES
 INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
 VALUES 
 (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
+
+{
+  "title": "Software Engineer",
+  "description": "Responsible for developing scalable software systems.",
+  "requirements": "Java, Spring Boot, MySQL, REST APIs",
+  "responsibilities": "Design, develop, test and deploy software components.",
+  "location": "Chennai",
+  "department": "Engineering",
+  "employmentType": "FULL_TIME",
+  "status": "ACTIVE",
+  "createdBy": 1
+}
