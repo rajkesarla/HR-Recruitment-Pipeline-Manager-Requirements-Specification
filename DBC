@@ -1,3 +1,23 @@
+{
+  "title": "Python Developer",
+  "description": "Develop backend APIs using Django and Flask.",
+  "requirements": "Python, Django, Flask, REST, PostgreSQL",
+  "responsibilities": "Build REST APIs, work with databases, and write unit tests.",
+  "location": "Chennai",
+  "department": "Engineering",
+  "employmentType": "FULL_TIME",
+  "status": "ACTIVE",
+  "createdBy": 1
+}
+
+
+
+
+
+
+
+
+
 USE job_portal;
 
 SELECT * FROM users;
