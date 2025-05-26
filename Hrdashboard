@@ -739,5 +739,139 @@ export class ForgotpasswordComponent implements OnInit {
 }
 
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Jobseek Landing Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Reset some default styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body, html {
+      height: 100%;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f5f6fa;
+    }
+
+    /* Navbar Styles */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background: #22223b;
+      color: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .navbar .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      color: #f2e9e4;
+    }
+    .navbar .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    .navbar button {
+      padding: 0.5rem 1.2rem;
+      border: none;
+      border-radius: 20px;
+      background: #4a4e69;
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .navbar button.signup {
+      background: #9a8c98;
+    }
+    .navbar button:hover {
+      background: #22223b;
+      color: #f2e9e4;
+      border: 1px solid #9a8c98;
+    }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 60vh;
+      min-height: 350px;
+      background: url('https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(34, 34, 59, 0.6);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      color: #f2e9e4;
+      text-align: center;
+    }
+    .hero-content h1 {
+      font-size: 2.8rem;
+      font-weight: bold;
+      margin-bottom: 1rem;
+      letter-spacing: 1.5px;
+    }
+    .hero-content p {
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Footer */
+    footer {
+      background: #22223b;
+      color: #f2e9e4;
+      text-align: center;
+      padding: 1.2rem 0;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 600px) {
+      .navbar { flex-direction: column; align-items: flex-start; }
+      .hero-content h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="logo">Jobseek</div>
+    <div class="nav-buttons">
+      <button class="login">Login</button>
+      <button class="signup">Signup</button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1>You Deserve, You Win</h1>
+      <p>Find your dream job with Jobseek today.</p>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    &copy; 2025 Jobseek. All rights reserved.
+  </footer>
+</body>
+</html>
 
 
