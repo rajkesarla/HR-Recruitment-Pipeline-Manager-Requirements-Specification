@@ -1,0 +1,114 @@
+@CrossOrigin(origins = "http://localhost:4200") 
+@RestController
+@RequestMapping(value="/job")
+@Validated
+public class JobPostingAPI {
+	@Autowired
+    private JobPostingService jobPostingService;
+
+    @Autowired
+    private Environment environment;
+
+    /*
+     * REST controller method to create and post a new job opening.
+     * Accepts job posting details in the HTTP request body.
+     * Invokes the createJobPosting() method of JobPostingService.
+     * Returns a ResponseEntity with the generated job ID and HTTP status CREATED.
+     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
+     */
+    @PostMapping(value = "/jobpost")
+    public ResponseEntity<JobPostingDTO> createJob(@RequestBody JobPostingDTO jobPostingDTO) throws hrpipelinemanagerException {
+        JobPosting jobPosting = jobPostingService.createJob(jobPostingDTO);
+
+        // Convert Entity back to DTO to return to frontend
+        JobPostingDTO responseDTO = new JobPostingDTO(jobPosting);
+
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
+    }
+
+    /*
+     * REST controller method to retrieve all active job postings.
+     * Invokes the getAllActiveJobPostings() method of JobPostingService.
+     * Returns a ResponseEntity with a list of active JobPostingDTOs and HTTP status OK.
+     * If no active job postings are found, it returns a ResponseEntity with HTTP status NO_CONTENT.
+     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
+     */
+    @GetMapping(value = "/active")
+    public ResponseEntity<List<JobPostingDTO>> getAllActiveJobPostings() throws hrpipelinemanagerException {
+        List<JobPostingDTO> activeJobPostings = jobPostingService.getAllActiveJobPostings();
+        if (activeJobPostings.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(activeJobPostings, HttpStatus.OK);
+    }
+
+    /*
+     * REST controller method to retrieve a job posting by its ID.
+     * Accepts jobId as a path variable.
+     * Invokes the getJobPostingById() method of JobPostingService.
+     * Returns a ResponseEntity with the JobPostingDTO and HTTP status OK if found.
+     * If the job posting is not found, it returns a ResponseEntity with HTTP status NOT_FOUND.
+     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
+     */
+    @GetMapping(value = "/{jobId}")
+    public ResponseEntity<JobPostingDTO> getJobPostingById(@PathVariable Long jobId) throws hrpipelinemanagerException {
+        JobPostingDTO jobPosting = jobPostingService.getJobPostingById(jobId);
+        return new ResponseEntity<>(jobPosting, HttpStatus.OK);
+    }
+
+    /*
+     * REST controller method to update an existing job posting.
+     * Accepts jobId as a path variable and updated job posting details in the HTTP request body.
+     * Invokes the updateJobPosting() method of JobPostingService.
+     * Returns a ResponseEntity with a success message and HTTP status OK.
+     * If the job posting is not found, it returns a ResponseEntity with HTTP status NOT_FOUND.
+     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
+     */
+    @PutMapping(value = "/{jobId}")
+    public ResponseEntity<String> updateJobPosting(@PathVariable Long jobId, @RequestBody JobPostingDTO jobPostingDTO) throws hrpipelinemanagerException {
+        jobPostingService.updateJobPosting(jobId, jobPostingDTO);
+        String successMessage = environment.getProperty("API.JOB_POSTING_UPDATED");
+        return new ResponseEntity<>(successMessage, HttpStatus.OK);
+    } 
+    
+    }
+
+package com.infy.hrpipelinemanager.dto;
+import com.infy.hrpipelinemanager.entity.JobPosting;
+import lombok.*;
+
+import java.sql.Timestamp;
+
+import com.infy.hrpipelinemanager.entity.EmploymentType;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class JobPostingDTO {
+    private Long jobId;
+    private String title;
+    private String description;
+    private String requirements;
+    private String responsibilities;
+    private String location;
+    private String department;
+    private EmploymentType employmentType;
+    private String status;
+    private Long createdBy; // user ID reference
+    private Timestamp createdAt;
+    
+    public JobPostingDTO(JobPosting jobPosting) {
+        this.jobId = jobPosting.getJobId();
+        this.title = jobPosting.getTitle();
+        this.description = jobPosting.getDescription();
+        this.requirements = jobPosting.getRequirements();
+        this.responsibilities = jobPosting.getResponsibilities();
+        this.location = jobPosting.getLocation();
+        this.department = jobPosting.getDepartment();
+        this.employmentType = jobPosting.getEmploymentType();
+        this.status = jobPosting.getStatus() != null ? jobPosting.getStatus().name() : null; 
+        // Assuming createdBy is a User object, we fetch userId
+        this.createdBy = jobPosting.getCreatedBy() != null ? jobPosting.getCreatedBy().getUserId() : null;
+    }
+    }
