@@ -1,3 +1,16 @@
+{
+  "title": "Backend Engineer",
+  "description": "Develop and maintain RESTful APIs using Spring Boot.",
+  "requirements": "Java, Spring Boot, REST, MySQL",
+  "responsibilities": "Implement backend logic, optimize database queries, and collaborate with frontend team.",
+  "location": "Bangalore",
+  "department": "Engineering",
+  "employmentType": "FULL_TIME",
+  "status": "ACTIVE",
+  "createdBy": {
+    "userId": 1
+  }
+}
 
 import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:4200") 
