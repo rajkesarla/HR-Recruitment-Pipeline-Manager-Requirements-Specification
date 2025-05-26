@@ -1,1 +1,273 @@
+ng generate module dashboard --routing
+ng generate component dashboard/dashboard
+ng generate component dashboard/job-postings
+ng generate component dashboard/candidate-pipeline
 
+
+
+
+dashboard.routing.ts
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { OverviewComponent } from './overview/overview.component';
+import { JobPostingsComponent } from './job-postings/job-postings.component';
+import { CandidatePipelineComponent } from './candidate-pipeline/candidate-pipeline.component';
+import { InterviewSchedulingComponent } from './interview-scheduling/interview-scheduling.component';
+import { OnboardingComponent } from './onboarding/onboarding.component';
+import { AnalyticsComponent } from './analytics/analytics.component';
+
+const routes: Routes = [
+  { path: '', component: OverviewComponent },
+  { path: 'job-postings', component: JobPostingsComponent },
+  { path: 'candidates', component: CandidatePipelineComponent },
+  { path: 'interviews', component: InterviewSchedulingComponent },
+  { path: 'onboarding', component: OnboardingComponent },
+  { path: 'analytics', component: AnalyticsComponent },
+];
+
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class DashboardRoutingModule { }
+
+
+
+
+
+dashboard.html
+
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard">Overview</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/job-postings">Job Postings</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/candidates">Candidates</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/interviews">Interviews</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/onboarding">Onboarding</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/analytics">Analytics</a></li>
+        </ul>
+      </div>
+    </nav>
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>
+
+
+job postings.ts
+
+import { Component, OnInit } from '@angular/core';
+
+interface JobPosting {
+  id: number;
+  title: string;
+  department: string;
+  location: string;
+  status: 'Active' | 'Inactive';
+}
+
+@Component({
+  selector: 'app-job-postings',
+  templateUrl: './job-postings.component.html'
+})
+export class JobPostingsComponent implements OnInit {
+  jobPostings: JobPosting[] = [
+    { id: 1, title: 'Software Engineer', department: 'IT', location: 'Bangalore', status: 'Active' },
+    { id: 2, title: 'UI Designer', department: 'Design', location: 'Remote', status: 'Inactive' }
+  ];
+
+  ngOnInit() {}
+
+  toggleStatus(job: JobPosting) {
+    job.status = job.status === 'Active' ? 'Inactive' : 'Active';
+  }
+}
+
+job postings.html
+<h2>Job Postings</h2>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Department</th>
+      <th>Location</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let job of jobPostings">
+      <td>{{ job.title }}</td>
+      <td>{{ job.department }}</td>
+      <td>{{ job.location }}</td>
+      <td>
+        <span [ngClass]="{'badge badge-success': job.status === 'Active', 'badge badge-secondary': job.status === 'Inactive'}">
+          {{ job.status }}
+        </span>
+      </td>
+      <td>
+        <button class="btn btn-sm btn-warning" (click)="toggleStatus(job)">
+          {{ job.status === 'Active' ? 'Deactivate' : 'Activate' }}
+        </button>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+candidate.ts
+
+import { Component } from '@angular/core';
+
+interface Candidate {
+  id: number;
+  name: string;
+  position: string;
+  stage: string;
+}
+
+@Component({
+  selector: 'app-candidate-pipeline',
+  templateUrl: './candidate-pipeline.component.html'
+})
+export class CandidatePipelineComponent {
+  stages = ['Applied', 'Phone Screen', 'Interview', 'Offer', 'Hired'];
+  candidates: Candidate[] = [
+    { id: 1, name: 'John Doe', position: 'Developer', stage: 'Applied' },
+    { id: 2, name: 'Jane Smith', position: 'Designer', stage: 'Interview' }
+  ];
+
+  moveCandidate(candidate: Candidate, newStage: string) {
+    candidate.stage = newStage;
+  }
+}
+
+
+candidate.html
+
+
+<h2>Candidate Pipeline</h2>
+<div class="row">
+  <div class="col" *ngFor="let stage of stages">
+    <div class="card mb-3">
+      <div class="card-header bg-primary text-white">{{ stage }}</div>
+      <div class="card-body">
+        <div *ngFor="let candidate of candidates.filter(c => c.stage === stage)" class="mb-2">
+          <strong>{{ candidate.name }}</strong> <span class="text-muted">({{ candidate.position }})</span>
+          <div>
+            <button *ngFor="let s of stages" [disabled]="s === stage" class="btn btn-sm btn-outline-secondary mr-1"
+              (click)="moveCandidate(candidate, s)">
+              Move to {{ s }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+interview.ts
+
+
+import { Component } from '@angular/core';
+
+interface Interview {
+  candidate: string;
+  interviewer: string;
+  date: string;
+  mode: string;
+  status: string;
+}
+
+@Component({
+  selector: 'app-interview-scheduling',
+  templateUrl: './interview-scheduling.component.html'
+})
+export class InterviewSchedulingComponent {
+  interviews: Interview[] = [
+    { candidate: 'John Doe', interviewer: 'HR Manager', date: '2025-05-30 10:00', mode: 'Video', status: 'Scheduled' }
+  ];
+}
+
+
+
+
+
+interview.html
+
+
+<h2>Interview Scheduling</h2>
+<table class="table">
+  <thead>
+    <tr>
+      <th>Candidate</th>
+      <th>Interviewer</th>
+      <th>Date</th>
+      <th>Mode</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let interview of interviews">
+      <td>{{ interview.candidate }}</td>
+      <td>{{ interview.interviewer }}</td>
+      <td>{{ interview.date }}</td>
+      <td>{{ interview.mode }}</td>
+      <td>{{ interview.status }}</td>
+    </tr>
+  </tbody>
+</table>
+
+
+
+
+analytics.ts
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-analytics',
+  templateUrl: './analytics.component.html'
+})
+export class AnalyticsComponent {
+  metrics = [
+    { title: 'Total Openings', value: 12 },
+    { title: 'New Applications', value: 34 },
+    { title: 'Intrviews Scheduled', value: 7 },
+    { title: 'Offers Made', value: 3 }
+  ];
+}
+
+
+
+analytics.htmk
+<h2>Dashboard Analytics</h2>
+<div class="row">
+  <div class="col-md-3" *ngFor="let metric of metrics">
+    <div class="card text-center mb-4">
+      <div class="card-body">
+        <h5 class="card-title">{{ metric.title }}</h5>
+        <p class="card-text display-4">{{ metric.value }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+csss
+
+.sidebar {
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+.card-header {
+  font-weight: bold;
+}
