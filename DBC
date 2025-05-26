@@ -1,3 +1,24 @@
+USE job_portal;
+
+SELECT * FROM users;
+SELECT * FROM job_postings;
+SELECT * FROM candidates;
+SELECT * FROM applications;
+SELECT * FROM interviews;
+SELECT * FROM interviewers;
+SELECT * FROM interview_feedback;
+SELECT * FROM candidate_notes;
+SELECT * FROM email_templates;
+SELECT * FROM onboarding_documents;
+SELECT * FROM audit_log;
+SELECT * FROM talent_pool;
+SELECT * FROM application_status_history;
+
+
+
+
+
+
 -- Insert Application (ensure this runs first)
 INSERT INTO applications (
     candidate_id, job_id, status, resume_url, cover_letter_url,
