@@ -964,3 +964,60 @@ body {
 }
 
 
+
+Component.ts
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+  loginForm!: FormGroup;
+
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    this.loginForm = this.fb.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required]
+    });
+  }
+
+  login(): void {
+    if (this.loginForm.valid) {
+      this.http.post<any>('http://localhost:8080/api/auth/login', this.loginForm.value)
+        .subscribe({
+          next: (res) => {
+            const role = res.role;
+            if (role === 'HR_RECRUITER') {
+              this.router.navigate(['/job-posting']);
+            } else if (role === 'CANDIDATE') {
+              this.router.navigate(['/job-application']);
+            } else if (role === 'INTERVIEWER') {
+              this.router.navigate(['/interviewer-dashboard']);
+            } else if (role === 'HIRING_MANAGER') {
+              this.router.navigate(['/manager-dashboard']);
+            } else {
+              alert('Unknown role');
+            }
+          },
+          error: () => {
+            alert('Invalid email or password');
+          }
+        });
+    }
+  }
+}
+
+
