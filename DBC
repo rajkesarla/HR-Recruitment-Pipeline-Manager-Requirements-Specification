@@ -112,3 +112,16 @@ public class JobPostingDTO {
         this.createdBy = jobPosting.getCreatedBy() != null ? jobPosting.getCreatedBy().getUserId() : null;
     }
     }
+{
+  "title": "Senior Java Developer",
+  "description": "We are looking for a skilled Java developer to join our backend team.",
+  "requirements": "5+ years of experience with Java, Spring Boot, and REST APIs.",
+  "responsibilities": "Design, develop, and maintain backend services and APIs.",
+  "location": "Bangalore, India",
+  "department": "Engineering",
+  "employmentType": "FULL_TIME",
+  "status": "ACTIVE",
+  "createdBy": 101,
+  "createdAt": "2025-05-25T10:00:00"
+}
+
