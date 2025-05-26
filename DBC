@@ -124,4 +124,168 @@ public class JobPostingDTO {
   "createdBy": 101,
   "createdAt": "2025-05-25T10:00:00"
 }
+DROP SCHEMA IF EXISTS job_portal;
+CREATE SCHEMA job_portal;
+USE job_portal;
+
+CREATE TABLE users (
+    user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    full_name VARCHAR(150),
+    role ENUM('HR_RECRUITER', 'HR_MANAGER', 'SYSTEM_ADMIN', 'HIRING_MANAGER','INTERVIEWER', 'CANDIDATE','HR_EXECUTIVE') NOT NULL,
+    status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+    mfa_enabled BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE job_postings (
+    job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    requirements TEXT,
+    responsibilities TEXT,
+    location VARCHAR(100),
+    department VARCHAR(100),
+    employment_type ENUM('FULL_TIME', 'PART_TIME', 'CONTRACT', 'INTERN') NOT NULL,
+    status ENUM('ACTIVE', 'INACTIVE') DEFAULT 'ACTIVE',
+    created_by BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
+);
+
+CREATE TABLE candidates (
+    candidate_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT UNIQUE,
+    name VARCHAR(150) NOT NULL,
+    resume TEXT,
+    cover_letter TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE applications (
+    application_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id BIGINT NOT NULL,
+    job_id BIGINT NOT NULL,
+    resume_url TEXT,
+    cover_letter_url TEXT,
+    status ENUM('APPLIED', 'REVIEWED', 'INTERVIEW_SCHEDULED', 'INTERVIEWED', 'OFFERED', 'REJECTED', 'HIRED', 'WITHDRAWN') NOT NULL DEFAULT 'APPLIED',
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(150) UNIQUE,
+    date_of_birth DATE,
+    phone_number VARCHAR(20),
+    address VARCHAR(255),
+    college_name VARCHAR(255),
+    tenth_percentage DECIMAL(5, 2),
+    twelfth_percentage DECIMAL(5, 2),
+    graduation_cgpa DECIMAL(4, 2),
+    post_graduation_cgpa DECIMAL(4, 2),
+    passed_out_year INT,
+    backlog_history TEXT,
+    skills TEXT,
+    projects TEXT,
+    course VARCHAR(255),
+    specialization VARCHAR(255),
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (job_id) REFERENCES job_postings(job_id)
+);
+
+CREATE TABLE interviews (
+    interview_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    application_id BIGINT NOT NULL UNIQUE,
+    interview_datetime DATETIME NOT NULL,
+    interview_type ENUM('PHONE', 'VIDEO', 'IN_PERSON') NOT NULL,
+    location_or_link TEXT,
+    status ENUM('SCHEDULED', 'COMPLETED', 'CANCELLED') DEFAULT 'SCHEDULED',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (application_id) REFERENCES applications(application_id)
+);
+
+CREATE TABLE interviewers (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    interview_id BIGINT NOT NULL,
+    interviewer_id BIGINT NOT NULL,
+    FOREIGN KEY (interview_id) REFERENCES interviews(interview_id),
+    FOREIGN KEY (interviewer_id) REFERENCES users(user_id),
+    UNIQUE(interview_id, interviewer_id)
+);
+
+CREATE TABLE interview_feedback (
+    feedback_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    interview_id BIGINT NOT NULL,
+    reviewer_id BIGINT NOT NULL,
+    rating TINYINT NOT NULL CHECK (rating BETWEEN 1 AND 5),
+    comments TEXT,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(interview_id, reviewer_id),
+    FOREIGN KEY (interview_id) REFERENCES interviews(interview_id),
+    FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE candidate_notes (
+    note_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id BIGINT NOT NULL,
+    added_by BIGINT,
+    note TEXT,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id),
+    FOREIGN KEY (added_by) REFERENCES users(user_id)
+);
+
+CREATE TABLE email_templates (
+    template_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    type ENUM('ACKNOWLEDGEMENT', 'STATUS_UPDATE', 'INTERVIEW_INVITE', 'FEEDBACK', 'GENERIC') NOT NULL,
+    subject VARCHAR(255),
+    body TEXT,
+    created_by BIGINT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (created_by) REFERENCES users(user_id)
+);
+
+CREATE TABLE onboarding_documents (
+    document_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id BIGINT NOT NULL,
+    document_name VARCHAR(255),
+    document_url TEXT,
+    signed BOOLEAN DEFAULT FALSE,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
+);
+
+CREATE TABLE audit_log (
+    log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    user_id BIGINT,
+    action_type VARCHAR(100),
+    description TEXT,
+    action_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+CREATE TABLE talent_pool (
+    pool_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    candidate_id BIGINT NOT NULL,
+    tags TEXT,
+    source VARCHAR(100),
+    reengagement_status ENUM('NOT_CONTACTED', 'CONTACTED', 'INTERESTED', 'NOT_INTERESTED') DEFAULT 'NOT_CONTACTED',
+    last_contacted_at TIMESTAMP NULL,
+    FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
+);
+
+CREATE TABLE application_status_history (
+    history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    application_id BIGINT NOT NULL,
+    previous_status VARCHAR(50),
+    new_status VARCHAR(50),
+    changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    changed_by BIGINT,
+    FOREIGN KEY (application_id) REFERENCES applications(application_id),
+    FOREIGN KEY (changed_by) REFERENCES users(user_id)
+);
+
 
