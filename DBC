@@ -1,213 +1,14 @@
-{
-  "title": "Python Developer",
-  "description": "Develop backend APIs using Django and Flask.",
-  "requirements": "Python, Django, Flask, REST, PostgreSQL",
-  "responsibilities": "Build REST APIs, work with databases, and write unit tests.",
-  "location": "Chennai",
-  "department": "Engineering",
-  "employmentType": "FULL_TIME",
-  "status": "ACTIVE",
-  "createdBy": 1
-}
+<<<<<<< HEAD
 
-
-
-
-
-
-
-
-
-USE job_portal;
-
-SELECT * FROM users;
-SELECT * FROM job_postings;
-SELECT * FROM candidates;
-SELECT * FROM applications;
-SELECT * FROM interviews;
-SELECT * FROM interviewers;
-SELECT * FROM interview_feedback;
-SELECT * FROM candidate_notes;
-SELECT * FROM email_templates;
-SELECT * FROM onboarding_documents;
-SELECT * FROM audit_log;
-SELECT * FROM talent_pool;
-SELECT * FROM application_status_history;
-
-
-
-
-
-
--- Insert Application (ensure this runs first)
-INSERT INTO applications (
-    candidate_id, job_id, status, resume_url, cover_letter_url,
-    first_name, last_name, email, date_of_birth, phone_number,
-    address, college_name, tenth_percentage, twelfth_percentage,
-    graduation_cgpa, post_graduation_cgpa, passed_out_year,
-    backlog_history, skills, projects, course, specialization
-) VALUES (
-    1, 1, 'APPLIED', 'http://resumes.com/resume1.pdf', 'http://letters.com/cover1.pdf',
-    'David', 'Candidate', 'candidate1@example.com', '1998-07-15', '9876543210',
-    '123 Main St, Bangalore', 'ABC College', 88.5, 91.2, 8.3, 8.0, 2020,
-    'No backlogs', 'Java, Spring, SQL', 'Job Portal, E-commerce', 'B.Tech', 'Computer Science'
-);
-
--- Insert Interview (application_id = 1)
-INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link)
-VALUES (1, '2025-06-01 10:30:00', 'VIDEO', 'https://meet.example.com/interview1');
-
--- Insert Interviewer (interview_id = 1, interviewer_id = 2)
-INSERT INTO interviewers (interview_id, interviewer_id)
-VALUES (1, 2);
-
--- Insert Interview Feedback
-INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
-VALUES (1, 2, 4, 'Candidate shows strong backend development skills.');
-
--- Insert Application Status History
-INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
-VALUES (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
-
-
-
-
-
-
-
-
-
-
-@CrossOrigin(origins = "http://localhost:4200") 
-@RestController
-@RequestMapping(value="/job")
-@Validated
-public class JobPostingAPI {
-	@Autowired
-    private JobPostingService jobPostingService;
-
-    @Autowired
-    private Environment environment;
-
-    /*
-     * REST controller method to create and post a new job opening.
-     * Accepts job posting details in the HTTP request body.
-     * Invokes the createJobPosting() method of JobPostingService.
-     * Returns a ResponseEntity with the generated job ID and HTTP status CREATED.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @PostMapping(value = "/jobpost")
-    public ResponseEntity<JobPostingDTO> createJob(@RequestBody JobPostingDTO jobPostingDTO) throws hrpipelinemanagerException {
-        JobPosting jobPosting = jobPostingService.createJob(jobPostingDTO);
-
-        // Convert Entity back to DTO to return to frontend
-        JobPostingDTO responseDTO = new JobPostingDTO(jobPosting);
-
-        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
-    }
-
-    /*
-     * REST controller method to retrieve all active job postings.
-     * Invokes the getAllActiveJobPostings() method of JobPostingService.
-     * Returns a ResponseEntity with a list of active JobPostingDTOs and HTTP status OK.
-     * If no active job postings are found, it returns a ResponseEntity with HTTP status NO_CONTENT.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @GetMapping(value = "/active")
-    public ResponseEntity<List<JobPostingDTO>> getAllActiveJobPostings() throws hrpipelinemanagerException {
-        List<JobPostingDTO> activeJobPostings = jobPostingService.getAllActiveJobPostings();
-        if (activeJobPostings.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(activeJobPostings, HttpStatus.OK);
-    }
-
-    /*
-     * REST controller method to retrieve a job posting by its ID.
-     * Accepts jobId as a path variable.
-     * Invokes the getJobPostingById() method of JobPostingService.
-     * Returns a ResponseEntity with the JobPostingDTO and HTTP status OK if found.
-     * If the job posting is not found, it returns a ResponseEntity with HTTP status NOT_FOUND.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @GetMapping(value = "/{jobId}")
-    public ResponseEntity<JobPostingDTO> getJobPostingById(@PathVariable Long jobId) throws hrpipelinemanagerException {
-        JobPostingDTO jobPosting = jobPostingService.getJobPostingById(jobId);
-        return new ResponseEntity<>(jobPosting, HttpStatus.OK);
-    }
-
-    /*
-     * REST controller method to update an existing job posting.
-     * Accepts jobId as a path variable and updated job posting details in the HTTP request body.
-     * Invokes the updateJobPosting() method of JobPostingService.
-     * Returns a ResponseEntity with a success message and HTTP status OK.
-     * If the job posting is not found, it returns a ResponseEntity with HTTP status NOT_FOUND.
-     * If any exception occurs, it returns a ResponseEntity with an error message and HTTP status BAD_REQUEST.
-     */
-    @PutMapping(value = "/{jobId}")
-    public ResponseEntity<String> updateJobPosting(@PathVariable Long jobId, @RequestBody JobPostingDTO jobPostingDTO) throws hrpipelinemanagerException {
-        jobPostingService.updateJobPosting(jobId, jobPostingDTO);
-        String successMessage = environment.getProperty("API.JOB_POSTING_UPDATED");
-        return new ResponseEntity<>(successMessage, HttpStatus.OK);
-    } 
-    
-    }
-
-package com.infy.hrpipelinemanager.dto;
-import com.infy.hrpipelinemanager.entity.JobPosting;
-import lombok.*;
-
-import java.sql.Timestamp;
-
-import com.infy.hrpipelinemanager.entity.EmploymentType;
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class JobPostingDTO {
-    private Long jobId;
-    private String title;
-    private String description;
-    private String requirements;
-    private String responsibilities;
-    private String location;
-    private String department;
-    private EmploymentType employmentType;
-    private String status;
-    private Long createdBy; // user ID reference
-    private Timestamp createdAt;
-    
-    public JobPostingDTO(JobPosting jobPosting) {
-        this.jobId = jobPosting.getJobId();
-        this.title = jobPosting.getTitle();
-        this.description = jobPosting.getDescription();
-        this.requirements = jobPosting.getRequirements();
-        this.responsibilities = jobPosting.getResponsibilities();
-        this.location = jobPosting.getLocation();
-        this.department = jobPosting.getDepartment();
-        this.employmentType = jobPosting.getEmploymentType();
-        this.status = jobPosting.getStatus() != null ? jobPosting.getStatus().name() : null; 
-        // Assuming createdBy is a User object, we fetch userId
-        this.createdBy = jobPosting.getCreatedBy() != null ? jobPosting.getCreatedBy().getUserId() : null;
-    }
-    }
-{
-  "title": "Senior Java Developer",
-  "description": "We are looking for a skilled Java developer to join our backend team.",
-  "requirements": "5+ years of experience with Java, Spring Boot, and REST APIs.",
-  "responsibilities": "Design, develop, and maintain backend services and APIs.",
-  "location": "Bangalore, India",
-  "department": "Engineering",
-  "employmentType": "FULL_TIME",
-  "status": "ACTIVE",
-  "createdBy": 101,
-  "createdAt": "2025-05-25T10:00:00"
-}
-DROP SCHEMA IF EXISTS job_portal;
+=======
+drop schema if exists job_portal;
 CREATE SCHEMA job_portal;
 USE job_portal;
+>>>>>>> branch 'main' of http://myslab42s08:3000/Feb25-SET-Interns1-CS-Java-Angular-A/group-14-backend.git
 
+-- ===================
+-- USERS TABLE
+-- ===================
 CREATE TABLE users (
     user_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(100) UNIQUE NOT NULL,
@@ -220,6 +21,9 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- ===================
+-- JOB POSTINGS TABLE
+-- ===================
 CREATE TABLE job_postings (
     job_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     title VARCHAR(255) NOT NULL,
@@ -235,6 +39,9 @@ CREATE TABLE job_postings (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
+-- ===================
+-- CANDIDATES TABLE
+-- ===================
 CREATE TABLE candidates (
     candidate_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT UNIQUE,
@@ -245,6 +52,11 @@ CREATE TABLE candidates (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+
+
+-- ===================
+-- APPLICATIONS TABLE
+-- ===================
 CREATE TABLE applications (
     application_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -263,7 +75,7 @@ CREATE TABLE applications (
     college_name VARCHAR(255),
     tenth_percentage DECIMAL(5, 2),
     twelfth_percentage DECIMAL(5, 2),
-    graduation_cgpa DECIMAL(4, 2),
+    graduation_cgpa DECIMAL(4, 2),z
     post_graduation_cgpa DECIMAL(4, 2),
     passed_out_year INT,
     backlog_history TEXT,
@@ -275,6 +87,10 @@ CREATE TABLE applications (
     FOREIGN KEY (job_id) REFERENCES job_postings(job_id)
 );
 
+
+-- ===================
+-- INTERVIEWS TABLE
+-- ===================
 CREATE TABLE interviews (
     interview_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     application_id BIGINT NOT NULL UNIQUE,
@@ -282,10 +98,15 @@ CREATE TABLE interviews (
     interview_type ENUM('PHONE', 'VIDEO', 'IN_PERSON') NOT NULL,
     location_or_link TEXT,
     status ENUM('SCHEDULED', 'COMPLETED', 'CANCELLED') DEFAULT 'SCHEDULED',
+    intviewer_email VARCHAR(150) UNIQUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (application_id) REFERENCES applications(application_id)
 );
 
+
+-- ===================
+-- INTERVIEWERS TABLE
+-- ===================
 CREATE TABLE interviewers (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     interview_id BIGINT NOT NULL,
@@ -295,6 +116,10 @@ CREATE TABLE interviewers (
     UNIQUE(interview_id, interviewer_id)
 );
 
+
+-- ===================
+-- INTERVIEW FEEDBACK TABLE
+-- ===================
 CREATE TABLE interview_feedback (
     feedback_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     interview_id BIGINT NOT NULL,
@@ -307,6 +132,9 @@ CREATE TABLE interview_feedback (
     FOREIGN KEY (reviewer_id) REFERENCES users(user_id)
 );
 
+-- ===================
+-- CANDIDATE NOTES TABLE
+-- ===================
 CREATE TABLE candidate_notes (
     note_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -317,6 +145,9 @@ CREATE TABLE candidate_notes (
     FOREIGN KEY (added_by) REFERENCES users(user_id)
 );
 
+-- ===================
+-- EMAIL TEMPLATES TABLE
+-- ===================
 CREATE TABLE email_templates (
     template_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -328,6 +159,9 @@ CREATE TABLE email_templates (
     FOREIGN KEY (created_by) REFERENCES users(user_id)
 );
 
+-- ===================
+-- ONBOARDING DOCUMENTS TABLE
+-- ===================
 CREATE TABLE onboarding_documents (
     document_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -338,6 +172,9 @@ CREATE TABLE onboarding_documents (
     FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
 );
 
+-- ===================
+-- AUDIT LOG TABLE
+-- ===================
 CREATE TABLE audit_log (
     log_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
@@ -347,6 +184,9 @@ CREATE TABLE audit_log (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 
+-- ===================
+-- TALENT POOL TABLE
+-- ===================
 CREATE TABLE talent_pool (
     pool_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     candidate_id BIGINT NOT NULL,
@@ -357,6 +197,9 @@ CREATE TABLE talent_pool (
     FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
 );
 
+-- ===================
+-- APPLICATION STATUS HISTORY TABLE
+-- ===================
 CREATE TABLE application_status_history (
     history_id BIGINT AUTO_INCREMENT PRIMARY KEY,
     application_id BIGINT NOT NULL,
@@ -367,197 +210,3 @@ CREATE TABLE application_status_history (
     FOREIGN KEY (application_id) REFERENCES applications(application_id),
     FOREIGN KEY (changed_by) REFERENCES users(user_id)
 );
-
-
--- Sample Users
-INSERT INTO users (username, password_hash, email, full_name, role)
-VALUES 
-('recruiter1', 'hashed_pw1', 'recruiter1@example.com', 'Alice HR', 'HR_RECRUITER'),
-('manager1', 'hashed_pw2', 'manager1@example.com', 'Bob Manager', 'HR_MANAGER'),
-('admin1', 'hashed_pw3', 'admin1@example.com', 'Charlie Admin', 'SYSTEM_ADMIN'),
-('candidate1', 'hashed_pw4', 'candidate1@example.com', 'David Candidate', 'CANDIDATE');
-
--- Sample Job Postings
-INSERT INTO job_postings (title, description, requirements, responsibilities, location, department, employment_type, status, created_by)
-VALUES 
-('Java Developer', 'Backend services with Spring Boot', 'Java, Spring Boot, REST', 'Develop and maintain backend services', 'Bangalore', 'Engineering', 'FULL_TIME', 'ACTIVE', 1),
-('Frontend Developer', 'UI with Angular', 'Angular, TypeScript, HTML, CSS', 'Build frontend modules', 'Hyderabad', 'Engineering', 'FULL_TIME', 'ACTIVE', 1);
-
--- Sample Candidate
-INSERT INTO candidates (user_id, name, resume, cover_letter)
-VALUES 
-(4, 'David Candidate', 'Resume content here...', 'Cover letter content here...');
-
--- Sample Application
-INSERT INTO applications (
-    candidate_id, job_id, status, resume_url, cover_letter_url,
-    first_name, last_name, email, date_of_birth, phone_number,
-    address, college_name, tenth_percentage, twelfth_percentage,
-    graduation_cgpa, post_graduation_cgpa, passed_out_year,
-    backlog_history, skills, projects, course, specialization
-) VALUES (
-    1, 1, 'APPLIED', 'http://resumes.com/resume1.pdf', 'http://letters.com/cover1.pdf',
-    'David', 'Candidate', 'candidate1@example.com', '1998-07-15', '9876543210',
-    '123 Main St, Bangalore', 'ABC College', 88.5, 91.2, 8.3, 8.0, 2020,
-    'No backlogs', 'Java, Spring, SQL', 'Job Portal, E-commerce', 'B.Tech', 'Computer Science'
-);
-
--- Sample Interview
-INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link)
-VALUES 
-(1, '2025-06-01 10:30:00', 'VIDEO', 'https://meet.example.com/interview1');
-
--- Sample Interviewer
-INSERT INTO interviewers (interview_id, interviewer_id)
-VALUES 
-(1, 2);
-
--- Interview Feedback
-INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
-VALUES 
-(1, 2, 4, 'Candidate shows strong backend development skills.');
-
--- Candidate Notes
-INSERT INTO candidate_notes (candidate_id, added_by, note)
-VALUES 
-(1, 1, 'Candidate showed interest in full-time backend roles.');
-
--- Email Template
-INSERT INTO email_templates (name, type, subject, body, created_by)
-VALUES 
-('Interview Invite', 'INTERVIEW_INVITE', 'Interview Scheduled', 'Dear [Name], your interview is scheduled on [Date].', 1);
-
--- Onboarding Document
-INSERT INTO onboarding_documents (candidate_id, document_name, document_url)
-VALUES 
-(1, 'Offer Letter', 'http://docs.example.com/offer1.pdf');
-
--- Audit Log
-INSERT INTO audit_log (user_id, action_type, description)
-VALUES 
-(1, 'CREATE_JOB', 'Created job posting for Java Developer.');
-
--- Talent Pool
-INSERT INTO talent_pool (candidate_id, tags, source)
-VALUES 
-(1, 'Java, Spring, Backend', 'LinkedIn');
-
--- Application Status History
-INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
-VALUES 
-(1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
-
-{
-  "title": "Software Engineer",
-  "description": "Responsible for developing scalable software systems.",
-  "requirements": "Java, Spring Boot, MySQL, REST APIs",
-  "responsibilities": "Design, develop, test and deploy software components.",
-  "location": "Chennai",
-  "department": "Engineering",
-  "employmentType": "FULL_TIME",
-  "status": "ACTIVE",
-  "createdBy": 1
-}
------------------------------------------------------------------------------------------------------------------------------
--- Sample Users
-mysql> INSERT INTO users (username, password_hash, email, full_name, role)
-    -> VALUES
-    -> ('recruiter1', 'hashed_pw1', 'recruiter1@example.com', 'Alice HR', 'HR_RECRUITER'),
-    -> ('manager1', 'hashed_pw2', 'manager1@example.com', 'Bob Manager', 'HR_MANAGER'),
-    -> ('admin1', 'hashed_pw3', 'admin1@example.com', 'Charlie Admin', 'SYSTEM_ADMIN'),
-    -> ('candidate1', 'hashed_pw4', 'candidate1@example.com', 'David Candidate', 'CANDIDATE');
-Query OK, 4 rows affected (0.12 sec)
-Records: 4  Duplicates: 0  Warnings: 0
-
-mysql>
-mysql> -- Sample Job Postings
-mysql> INSERT INTO job_postings (title, description, requirements, responsibilities, location, department, employment_type, status, created_by)
-    -> VALUES
-    -> ('Java Developer', 'Backend services with Spring Boot', 'Java, Spring Boot, REST', 'Develop and maintain backend services', 'Bangalore', 'Engineering', 'FULL_TIME', 'ACTIVE', 1),
-    -> ('Frontend Developer', 'UI with Angular', 'Angular, TypeScript, HTML, CSS', 'Build frontend modules', 'Hyderabad', 'Engineering', 'FULL_TIME', 'ACTIVE', 1);
-Query OK, 2 rows affected (0.01 sec)
-Records: 2  Duplicates: 0  Warnings: 0
-
-mysql>
-mysql> -- Sample Candidate
-mysql> INSERT INTO candidates (user_id, name, resume, cover_letter)
-    -> VALUES
-    -> (4, 'David Candidate', 'Resume content here...', 'Cover letter content here...');
-Query OK, 1 row affected (0.01 sec)
-
-mysql>
-mysql> -- Sample Application
-mysql> INSERT INTO applications (
-    ->     candidate_id, job_id, status, resume_url, cover_letter_url,
-    ->     first_name, last_name, email, date_of_birth, phone_number,
-    ->     address, college_name, tenth_percentage, twelfth_percentage,
-    ->     graduation_cgpa, post_graduation_cgpa, passed_out_year,
-    ->     backlog_history, skills, projects, course, specialization
-    -> ) VALUES (
-    ->     1, 1, 'APPLIED', 'http://resumes.com/resume1.pdf', 'http://letters.com/cover1.pdf',
-    ->     'David', 'Candidate', 'candidate1@example.com', '1998-07-15', '9876543210',
-    ->     '123 Main St, Bangalore', 'ABC College', 88.5, 91.2, 8.3, 8.0, 2020,
-    ->     'No backlogs', 'Java, Spring, SQL', 'Job Portal, E-commerce', 'B.Tech', 'Computer Science'
-    -> );
-ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '    candidate_id, job_id, status, resume_url, cover_letter_url,
-    first_na' at line 2
-mysql>
-mysql> -- Sample Interview
-mysql> INSERT INTO interviews (application_id, interview_datetime, interview_type, location_or_link)
-    -> VALUES
-    -> (1, '2025-06-01 10:30:00', 'VIDEO', 'https://meet.example.com/interview1');
-ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`interviews`, CONSTRAINT `interviews_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `applications` (`application_id`))
-mysql>
-mysql> -- Sample Interviewer
-mysql> INSERT INTO interviewers (interview_id, interviewer_id)
-    -> VALUES
-    -> (1, 2);
-ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`interviewers`, CONSTRAINT `interviewers_ibfk_1` FOREIGN KEY (`interview_id`) REFERENCES `interviews` (`interview_id`))
-mysql>
-mysql> -- Interview Feedback
-mysql> INSERT INTO interview_feedback (interview_id, reviewer_id, rating, comments)
-    -> VALUES
-    -> (1, 2, 4, 'Candidate shows strong backend development skills.');
-ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`interview_feedback`, CONSTRAINT `interview_feedback_ibfk_1` FOREIGN KEY (`interview_id`) REFERENCES `interviews` (`interview_id`))
-mysql>
-mysql> -- Candidate Notes
-mysql> INSERT INTO candidate_notes (candidate_id, added_by, note)
-    -> VALUES
-    -> (1, 1, 'Candidate showed interest in full-time backend roles.');
-Query OK, 1 row affected (0.02 sec)
-
-mysql>
-mysql> -- Email Template
-mysql> INSERT INTO email_templates (name, type, subject, body, created_by)
-    -> VALUES
-    -> ('Interview Invite', 'INTERVIEW_INVITE', 'Interview Scheduled', 'Dear [Name], your interview is scheduled on [Date].', 1);
-Query OK, 1 row affected (0.01 sec)
-
-mysql>
-mysql> -- Onboarding Document
-mysql> INSERT INTO onboarding_documents (candidate_id, document_name, document_url)
-    -> VALUES
-    -> (1, 'Offer Letter', 'http://docs.example.com/offer1.pdf');
-Query OK, 1 row affected (0.01 sec)
-
-mysql>
-mysql> -- Audit Log
-mysql> INSERT INTO audit_log (user_id, action_type, description)
-    -> VALUES
-    -> (1, 'CREATE_JOB', 'Created job posting for Java Developer.');
-Query OK, 1 row affected (0.02 sec)
-
-mysql>
-mysql> -- Talent Pool
-mysql> INSERT INTO talent_pool (candidate_id, tags, source)
-    -> VALUES
-    -> (1, 'Java, Spring, Backend', 'LinkedIn');
-Query OK, 1 row affected (0.01 sec)
-
-mysql>
-mysql> -- Application Status History
-mysql> INSERT INTO application_status_history (application_id, previous_status, new_status, changed_by)
-    -> VALUES
-    -> (1, 'APPLIED', 'INTERVIEW_SCHEDULED', 1);
-ERROR 1452 (23000): Cannot add or update a child row: a foreign key constraint fails (`job_portal`.`application_status_history`, CONSTRAINT `application_status_history_ibfk_1` FOREIGN KEY (`application_id`) REFERENCES `applications` (`application_id`))
-
