@@ -1,276 +1,444 @@
-ng generate module dashboard --routing
-ng generate component dashboard/overview
-ng generate component dashboard/job-postings
-ng generate component dashboard/candidate-pipeline
-ng generate component dashboard/interview-scheduling
-ng generate component dashboard/onboarding
-ng generate component dashboard/analytics
+<div class="container py-4">
 
-
-
-
-dashboard.routing.ts
-import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { OverviewComponent } from './overview/overview.component';
-import { JobPostingsComponent } from './job-postings/job-postings.component';
-import { CandidatePipelineComponent } from './candidate-pipeline/candidate-pipeline.component';
-import { InterviewSchedulingComponent } from './interview-scheduling/interview-scheduling.component';
-import { OnboardingComponent } from './onboarding/onboarding.component';
-import { AnalyticsComponent } from './analytics/analytics.component';
-
-const routes: Routes = [
-  { path: '', component: OverviewComponent },
-  { path: 'job-postings', component: JobPostingsComponent },
-  { path: 'candidates', component: CandidatePipelineComponent },
-  { path: 'interviews', component: InterviewSchedulingComponent },
-  { path: 'onboarding', component: OnboardingComponent },
-  { path: 'analytics', component: AnalyticsComponent },
-];
-
-@NgModule({
-  imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule]
-})
-export class DashboardRoutingModule { }
-
-
-
-
-
-dashboard.html
-
-<div class="container-fluid">
-  <div class="row">
-    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard">Overview</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/job-postings">Job Postings</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/candidates">Candidates</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/interviews">Interviews</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/onboarding">Onboarding</a></li>
-          <li class="nav-item"><a class="nav-link" routerLink="/dashboard/analytics">Analytics</a></li>
-        </ul>
-      </div>
-    </nav>
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
-      <router-outlet></router-outlet>
-    </main>
-  </div>
-</div>
-
-
-job postings.ts
-
-import { Component, OnInit } from '@angular/core';
-
-interface JobPosting {
-  id: number;
-  title: string;
-  department: string;
-  location: string;
-  status: 'Active' | 'Inactive';
-}
-
-@Component({
-  selector: 'app-job-postings',
-  templateUrl: './job-postings.component.html'
-})
-export class JobPostingsComponent implements OnInit {
-  jobPostings: JobPosting[] = [
-    { id: 1, title: 'Software Engineer', department: 'IT', location: 'Bangalore', status: 'Active' },
-    { id: 2, title: 'UI Designer', department: 'Design', location: 'Remote', status: 'Inactive' }
-  ];
-
-  ngOnInit() {}
-
-  toggleStatus(job: JobPosting) {
-    job.status = job.status === 'Active' ? 'Inactive' : 'Active';
-  }
-}
-
-job postings.html
-<h2>Job Postings</h2>
-<table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Title</th>
-      <th>Department</th>
-      <th>Location</th>
-      <th>Status</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let job of jobPostings">
-      <td>{{ job.title }}</td>
-      <td>{{ job.department }}</td>
-      <td>{{ job.location }}</td>
-      <td>
-        <span [ngClass]="{'badge badge-success': job.status === 'Active', 'badge badge-secondary': job.status === 'Inactive'}">
-          {{ job.status }}
-        </span>
-      </td>
-      <td>
-        <button class="btn btn-sm btn-warning" (click)="toggleStatus(job)">
-          {{ job.status === 'Active' ? 'Deactivate' : 'Activate' }}
-        </button>
-      </td>
-    </tr>
-  </tbody>
-</table>
-
-
-
-candidate.ts
-
-import { Component } from '@angular/core';
-
-interface Candidate {
-  id: number;
-  name: string;
-  position: string;
-  stage: string;
-}
-
-@Component({
-  selector: 'app-candidate-pipeline',
-  templateUrl: './candidate-pipeline.component.html'
-})
-export class CandidatePipelineComponent {
-  stages = ['Applied', 'Phone Screen', 'Interview', 'Offer', 'Hired'];
-  candidates: Candidate[] = [
-    { id: 1, name: 'John Doe', position: 'Developer', stage: 'Applied' },
-    { id: 2, name: 'Jane Smith', position: 'Designer', stage: 'Interview' }
-  ];
-
-  moveCandidate(candidate: Candidate, newStage: string) {
-    candidate.stage = newStage;
-  }
-}
-
-
-candidate.html
-
-
-<h2>Candidate Pipeline</h2>
-<div class="row">
-  <div class="col" *ngFor="let stage of stages">
-    <div class="card mb-3">
-      <div class="card-header bg-primary text-white">{{ stage }}</div>
-      <div class="card-body">
-        <div *ngFor="let candidate of candidates.filter(c => c.stage === stage)" class="mb-2">
-          <strong>{{ candidate.name }}</strong> <span class="text-muted">({{ candidate.position }})</span>
+    <h3 class="mb-4 text-center text-primary fw-bold">Interview Feedback</h3>
+  
+    <div class="passing-rating mb-4 d-flex flex-wrap align-items-center justify-content-center gap-3">
+      <label for="jobRoleSelect" class="fw-semibold">Select Job Role:</label>
+      <select id="jobRoleSelect" formControlName="selectedJobRole" class="form-select w-auto">
+        <option *ngFor="let job of jobRoles" [value]="job.role">{{ job.role }}</option>
+      </select>
+  
+      <label for="passingRatingInput" class="fw-semibold ms-3">Passing Rating Threshold:</label>
+      <input
+        id="passingRatingInput"
+        type="number"
+        formControlName="passingRating"
+        min="0" max="100" step="1"
+        class="form-control w-auto"
+      />
+  
+      <button (click)="changeAllStatuses()" class="btn btn-primary ms-3 px-4 py-2 fw-semibold shadow-sm">
+        Change Status for All
+      </button>
+    </div>
+  
+    <div class="candidate-feedback-list">
+      <div *ngFor="let candidate of filteredCandidates" class="feedback-card mb-4 position-relative">
+  
+        <!-- Interview ID bar -->
+        <div class="interview-id">{{ candidate.interviewId }}</div>
+  
+        <!-- Rating badge top-right -->
+        <div class="rating-badge" *ngIf="getFeedback(candidate.id) as fb">
+          {{ fb.rating }}%
+        </div>
+  
+        <!-- Candidate & Interviewer row -->
+        <div class="candidate-interviewer-row mt-3">
+  
           <div>
-            <button *ngFor="let s of stages" [disabled]="s === stage" class="btn btn-sm btn-outline-secondary mr-1"
-              (click)="moveCandidate(candidate, s)">
-              Move to {{ s }}
-            </button>
+            <div class="candidate-info">{{ candidate.name }}</div>
+            <div class="job-role">{{ candidate.jobRole }}</div>
+          </div>
+  
+          <div class="interviewer-info" *ngIf="getFeedback(candidate.id) as fb">
+            Interviewer: {{ getInterviewerName(fb.interviewerId) }}
           </div>
         </div>
+  
+        <!-- Feedback comments -->
+        <div class="feedback-details" *ngIf="getFeedback(candidate.id) as fb; else noFeedback">
+          {{ fb.comments }}
+        </div>
+        <ng-template #noFeedback>
+          <div class="no-feedback">No feedback available</div>
+        </ng-template>
+  
+        <!-- Status -->
+        <div class="status mt-3" [ngClass]="candidate.status.toLowerCase()">
+          {{ candidate.status }}
+        </div>
+  
+        <!-- Update status button -->
+        <button
+          (click)="updateCandidateStatus(candidate)"
+          [disabled]="candidate.status === 'HIRED' || candidate.status === 'REJECTED'"
+          class="btn btn-outline-primary w-100 mt-3 fw-semibold"
+        >
+          Update Status
+        </button>
       </div>
     </div>
   </div>
-</div>
+  
+/* Container */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 15px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    background: #fefefe;
+}
 
+/* Interview ID bar at top of card */
+.interview-id {
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    color: white;
+    font-weight: 600;
+    padding: 0.45rem 1rem; /* reduced vertical padding */
+    border-top-left-radius: 0.375rem;
+    border-top-right-radius: 0.375rem;
+    font-size: 0.9rem; /* slightly smaller */
+    letter-spacing: 0.06em;
+    user-select: none;
+    box-shadow: 0 3px 6px rgb(13 110 253 / 0.4);
+    transition: background-color 0.3s ease;
+}
+.interview-id:hover {
+    background-color: #0b5ed7;
+}
 
-interview.ts
+/* Card styling */
+.feedback-card {
+    background: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 0.075);
+    padding: 1.25rem 1.25rem 1.75rem 1.25rem; /* reduced padding */
+    position: relative;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+    cursor: default;
+}
+.feedback-card:hover {
+    box-shadow: 0 0.75rem 1.5rem rgb(0 0 0 / 0.12);
+    transform: translateY(-4px);
+}
 
+/* Rating badge top-right */
+.rating-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    background: #198754; /* Bootstrap success green */
+    color: white;
+    font-weight: 700;
+    font-size: 0.85rem; /* reduced font size */
+    padding: 0.25rem 0.5rem; /* reduced padding */
+    border-radius: 0.375rem;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    user-select: none;
+    transition: background-color 0.3s ease;
+}
+.rating-badge:hover {
+    background-color: #157347;
+}
 
-import { Component } from '@angular/core';
+/* Candidate & Interviewer row */
+.candidate-interviewer-row {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem; /* slightly reduced vertical gap */
+    margin-top: 0.4rem; /* reduced margin-top */
+}
 
-interface Interview {
-  candidate: string;
-  interviewer: string;
-  date: string;
-  mode: string;
+/* Candidate info */
+.candidate-info {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #0d6efd;
+    text-shadow: 0 0 2px rgb(13 110 253 / 0.3);
+}
+
+/* Job role */
+.job-role {
+    margin-top: 0.2rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6c757d; /* muted gray */
+}
+
+/* Interviewer info */
+.interviewer-info {
+    font-size: 1rem;
+    color: #495057;
+    font-weight: 600;
+    align-self: center;
+    text-align: right;
+    min-width: 140px;
+}
+
+/* Feedback comments */
+.feedback-details {
+    margin-top: 0.8rem; /* reduced margin */
+    font-style: italic;
+    color: #343a40;
+    font-size: 0.95rem; /* slightly smaller */
+    line-height: 1.4; /* tighter line height */
+    border-left: 3px solid #0d6efd;
+    padding-left: 0.8rem; /* reduced padding */
+    user-select: text;
+    background: #f8f9fa;
+    border-radius: 0.3rem;
+    box-shadow: inset 0 0 8px rgb(0 0 0 / 0.05);
+    transition: background-color 0.3s ease;
+}
+.feedback-details:hover {
+    background-color: #e9f0ff;
+}
+
+/* No feedback */
+.no-feedback {
+    margin-top: 0.8rem; /* reduced margin */
+    font-size: 1rem;
+    font-style: italic;
+    color: #adb5bd;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Status styles */
+.status {
+    margin-top: 1rem; /* reduced margin */
+    font-weight: 700;
+    font-size: 1rem; /* reduced font size */
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    user-select: none;
+    text-align: center;
+    padding: 0.4rem 0; /* reduced padding */
+    border-radius: 0.5rem;
+    width: 130px; /* narrower */
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.1);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.status.hired {
+    color: #198754; /* green */
+    background-color: #d1e7dd;
+    border: 1.5px solid #198754;
+}
+.status.hired:hover {
+    background-color: #bcd0c7;
+    box-shadow: 0 5px 12px rgb(25 135 84 / 0.4);
+}
+
+.status.rejected {
+    color: #dc3545; /* red */
+    background-color: #f8d7da;
+    border: 1.5px solid #dc3545;
+}
+.status.rejected:hover {
+    background-color: #e4b9bf;
+    box-shadow: 0 5px 12px rgb(220 53 69 / 0.4);
+}
+
+.status.pending {
+    color: #ffc107; /* yellow */
+    background-color: #fff3cd;
+    border: 1.5px solid #ffc107;
+}
+.status.pending:hover {
+    background-color: #ffe69c;
+    box-shadow: 0 5px 12px rgb(255 193 7 / 0.4);
+}
+
+/* Update status button */
+button.btn-outline-primary {
+    border-width: 2px;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.6rem 0;
+    border-radius: 0.5rem;
+    transition: background-color 0.25s ease, color 0.25s ease, box-shadow 0.25s ease;
+    box-shadow: 0 3px 8px rgb(13 110 253 / 0.25);
+    cursor: pointer;
+    width: 100%;
+    user-select: none;
+}
+button.btn-outline-primary:hover:not(:disabled) {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+    box-shadow: 0 7px 18px rgb(13 110 253 / 0.6);
+}
+button.btn-outline-primary:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+}
+
+/* Passing rating and job role selector styles */
+.passing-rating label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #212529;
+    user-select: none;
+}
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .candidate-interviewer-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .interviewer-info {
+        text-align: left;
+        min-width: auto;
+        font-size: 0.95rem;
+    }
+    .rating-badge {
+        top: 10px;
+        right: 12px;
+        font-size: 0.85rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .candidate-info {
+        font-size: 1.1rem;
+    }
+    .job-role {
+        font-size: 0.9rem;
+    }
+    button.btn-outline-primary {
+        font-size: 0.9rem;
+        padding: 0.55rem 0;
+    }
+    .status {
+        width: 100%;
+        font-size: 1rem;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 350px) {
+    .passing-rating {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .passing-rating label,
+    .passing-rating select,
+    .passing-rating input[type="number"],
+    .passing-rating button {
+        width: 100%;
+        min-width: unset;
+    }
+}
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+interface Candidate {
+  id: string;
+  name: string;
   status: string;
+  interviewId: string;
+  jobRole: string;
+}
+
+interface Feedback {
+  candidateId: string;
+  interviewerId: string;
+  rating: number;
+  comments: string;
+}
+
+interface Interviewer {
+  id: string;
+  name: string;
 }
 
 @Component({
-  selector: 'app-interview-scheduling',
-  templateUrl: './interview-scheduling.component.html'
+  selector: 'app-interviewfeedback',
+  templateUrl: './interviewfeedback.component.html',
+  styleUrls: ['./interviewfeedback.component.css']
 })
-export class InterviewSchedulingComponent {
-  interviews: Interview[] = [
-    { candidate: 'John Doe', interviewer: 'HR Manager', date: '2025-05-30 10:00', mode: 'Video', status: 'Scheduled' }
+export class InterviewFeedbackComponent implements OnInit {
+  feedbackForm!: FormGroup;
+
+  jobRoles = [
+    { role: 'Software Engineer', threshold: 70 },
+    { role: 'Data Scientist', threshold: 75 },
+    { role: 'Product Manager', threshold: 80 }
   ];
-}
 
-
-
-
-
-interview.html
-
-
-<h2>Interview Scheduling</h2>
-<table class="table">
-  <thead>
-    <tr>
-      <th>Candidate</th>
-      <th>Interviewer</th>
-      <th>Date</th>
-      <th>Mode</th>
-      <th>Status</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let interview of interviews">
-      <td>{{ interview.candidate }}</td>
-      <td>{{ interview.interviewer }}</td>
-      <td>{{ interview.date }}</td>
-      <td>{{ interview.mode }}</td>
-      <td>{{ interview.status }}</td>
-    </tr>
-  </tbody>
-</table>
-
-
-
-
-analytics.ts
-
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-analytics',
-  templateUrl: './analytics.component.html'
-})
-export class AnalyticsComponent {
-  metrics = [
-    { title: 'Total Openings', value: 12 },
-    { title: 'New Applications', value: 34 },
-    { title: 'Intrviews Scheduled', value: 7 },
-    { title: 'Offers Made', value: 3 }
+  candidates: Candidate[] = [
+    { id: 'C001', name: 'Alice', status: 'PENDING', interviewId: 'INT001', jobRole: 'Software Engineer' },
+    { id: 'C002', name: 'Bob', status: 'PENDING', interviewId: 'INT002', jobRole: 'Data Scientist' },
+    { id: 'C003', name: 'Carla', status: 'PENDING', interviewId: 'INT003', jobRole: 'Product Manager' },
+    { id: 'C004', name: 'David', status: 'PENDING', interviewId: 'INT004', jobRole: 'Software Engineer' },
+    { id: 'C005', name: 'Eve', status: 'PENDING', interviewId: 'INT005', jobRole: 'Data Scientist' },
+    { id: 'C006', name: 'Frank', status: 'PENDING', interviewId: 'INT006', jobRole: 'Product Manager' },
+    { id: 'C007', name: 'Grace', status: 'PENDING', interviewId: 'INT007', jobRole: 'Software Engineer' },
+    { id: 'C008', name: 'Henry', status: 'PENDING', interviewId: 'INT008', jobRole: 'Product Manager' },
   ];
-}
 
+  interviewers: Interviewer[] = [
+    { id: 'INT01', name: 'John Smith' },
+    { id: 'INT02', name: 'Sarah Lee' },
+  ];
 
+  feedbacks: Feedback[] = [
+    { candidateId: 'C001', interviewerId: 'INT01', rating: 80, comments: 'Strong performance' },
+    { candidateId: 'C002', interviewerId: 'INT01', rating: 45, comments: 'Needs improvement' },
+    { candidateId: 'C003', interviewerId: 'INT02', rating: 67, comments: 'Average' },
+    { candidateId: 'C004', interviewerId: 'INT01', rating: 90, comments: 'Excellent' },
+    { candidateId: 'C005', interviewerId: 'INT02', rating: 38, comments: 'Weak technical skills' },
+    { candidateId: 'C006', interviewerId: 'INT01', rating: 72, comments: 'Good with communication' },
+    { candidateId: 'C007', interviewerId: 'INT02', rating: 51, comments: 'Barely passed' },
+    { candidateId: 'C008', interviewerId: 'INT01', rating: 30, comments: 'Poor overall' },
+  ];
 
-analytics.htmk
-<h2>Dashboard Analytics</h2>
-<div class="row">
-  <div class="col-md-3" *ngFor="let metric of metrics">
-    <div class="card text-center mb-4">
-      <div class="card-body">
-        <h5 class="card-title">{{ metric.title }}</h5>
-        <p class="card-text display-4">{{ metric.value }}</p>
-      </div>
-    </div>
-  </div>
-</div>
+  constructor(private fb: FormBuilder) {}
 
+  ngOnInit(): void {
+    this.feedbackForm = this.fb.group({
+      passingRating: [0, [Validators.required, Validators.min(0), Validators.max(100)]],
+      selectedJobRole: [this.jobRoles[0].role]
+    });
 
+    // Reset passingRating to 0 every time job role changes (manual input required)
+    this.feedbackForm.get('selectedJobRole')?.valueChanges.subscribe(_ => {
+      this.feedbackForm.get('passingRating')?.setValue(0, { emitEvent: false });
+    });
+  }
 
+  get filteredCandidates(): Candidate[] {
+    const selectedRole = this.feedbackForm.get('selectedJobRole')?.value;
+    return this.candidates.filter(c => c.jobRole === selectedRole);
+  }
 
-csss
+  getFeedback(candidateId: string): Feedback | undefined {
+    return this.feedbacks.find(f => f.candidateId === candidateId);
+  }
 
-.sidebar {
-  min-height: 100vh;
-  background: #f8f9fa;
-}
-.card-header {
-  font-weight: bold;
+  getInterviewerName(id: string): string {
+    return this.interviewers.find(i => i.id === id)?.name || 'Unknown';
+  }
+
+  updateCandidateStatus(candidate: Candidate): void {
+    const feedback = this.getFeedback(candidate.id);
+    if (!feedback) return;
+
+    const threshold = this.feedbackForm.get('passingRating')?.value;
+    candidate.status = feedback.rating >= threshold ? 'HIRED' : 'REJECTED';
+  }
+
+  changeAllStatuses(): void {
+    const threshold = this.feedbackForm.get('passingRating')?.value;
+    const selectedRole = this.feedbackForm.get('selectedJobRole')?.value;
+
+    this.candidates
+      .filter(candidate => candidate.jobRole === selectedRole)
+      .forEach(candidate => {
+        const feedback = this.getFeedback(candidate.id);
+        if (feedback) {
+          candidate.status = feedback.rating >= threshold ? 'HIRED' : 'REJECTED';
+        }
+      });
+  }
 }
