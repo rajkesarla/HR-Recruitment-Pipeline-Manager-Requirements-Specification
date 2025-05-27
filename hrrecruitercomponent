@@ -1,0 +1,1595 @@
+hrrecruitercomponent:
+/* Sticky and animated background navbar */
+.custom-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+    background: linear-gradient(to left, #007bff 0%, #0056b3 100%);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+    transition: background 0.5s ease-in-out;
+  }
+  
+  /* Brand styling */
+  .custom-navbar .navbar-brand {
+    font-weight: bold;
+    font-size: 1.6rem;
+    color: #ffffff;
+    letter-spacing: 1px;
+    transition: transform 0.3s, color 0.3s;
+  }
+  .custom-navbar .navbar-brand:hover {
+    transform: scale(1.05);
+    color: #ffa600;
+  }
+  
+  /* Nav links */
+  .custom-navbar .navbar-nav .nav-link {
+    color: #d9dce2;
+    margin-right: 1.2rem;
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .custom-navbar .navbar-nav .nav-link:hover {
+    color: #ffffff;
+    background-color: rgba(44, 43, 43, 0.185);
+    transform: translateY(-2px);
+  }
+  
+  .custom-navbar .navbar-nav .nav-link.active {
+    color: #ffffff;
+    background-color: rgba(250, 158, 21, 0.2);
+    border-bottom: 3px solid #fa9e15;
+    padding-bottom: 4px;
+  }
+  
+  /* Navbar toggle button on mobile */
+  .navbar-toggler {
+    border-color: #b3afa2;
+    background-color: rgba(250, 204, 21, 0.1);
+    border-radius: 0.25rem;
+    padding: 0.4rem 0.6rem;
+    transition: all 0.3s ease;
+  }
+  .navbar-toggler:hover {
+    background-color: rgba(250, 204, 21, 0.3);
+  }
+  
+  /* Responsive mobile styles */
+  @media (max-width: 767px) {
+    .custom-navbar .navbar-nav .nav-link {
+      margin-right: 0;
+      margin-bottom: 0.75rem;
+      font-size: 1.05rem;
+      text-align: center;
+      display: block;
+    }
+  
+    .custom-navbar .navbar-collapse {
+      background-color: #1f2937;
+      padding: 1.2rem;
+      border-radius: 0 0 10px 10px;
+    }
+  }
+  
+<nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand nav-link" routerLink="/hr/profile" routerLinkActive="active">HR Recruiter</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+  
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" routerLink="/hr/jobpost" routerLinkActive="active">Job Posting</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/hr/interviews" routerLinkActive="active">Interviews</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/hr/pipeline" routerLinkActive="active">Candidate Pipeline</a></li>
+          <li class="nav-item"><a class="nav-link" routerLink="/hr/after-interview" routerLinkActive="active">After Interview</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  
+  <router-outlet></router-outlet>
+  
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-hrrecruitercomponent',
+  templateUrl: './hrrecruitercomponent.component.html',
+  styleUrls: ['./hrrecruitercomponent.component.css']
+})
+export class HrrecruitercomponentComponent {
+
+}
+
+
+
+------------------------------------------------------------------------------------
+rejobpost component:
+<div class="container">
+    <div class="row">
+      <div class="offset-1 col-10">
+        <br />
+        <h3 class="text-center" id="heading">Create Job Posting</h3>
+        <br />
+  
+        <div class="row">
+          <div class="offset-lg-3 col-lg-6 offset-md-2 col-md-8 offset-1 col-10 formBlock">
+            <form [formGroup]="jobPostingForm" (ngSubmit)="onSubmit()">
+              
+              <!-- Job Title -->
+              <div class="form-group">
+                <label for="jobTitle">Job Title</label>
+                <input type="text" id="jobTitle" class="form-control" formControlName="title" placeholder="Enter Job Title">
+                <span class="text-danger" *ngIf="jobPostingForm.controls['title'].invalid && (jobPostingForm.controls['title'].dirty || jobPostingForm.controls['title'].touched)">
+                  Job title is required.
+                </span>
+              </div>
+  
+              <!-- Job Description -->
+              <div class="form-group">
+                <label for="jobDescription">Job Description</label>
+                <textarea id="jobDescription" class="form-control" formControlName="description" rows="3" placeholder="Enter Job Description"></textarea>
+                <span class="text-danger" *ngIf="jobPostingForm.controls['description'].invalid && (jobPostingForm.controls['description'].dirty || jobPostingForm.controls['description'].touched)">
+                  Job description is required.
+                </span>
+              </div>
+  
+              <!-- Requirements -->
+              <div class="form-group">
+                <label for="requirements">Requirements</label>
+                <textarea id="requirements" class="form-control" formControlName="requirements" rows="3" placeholder="Enter Job Requirements"></textarea>
+              </div>
+  
+              <!-- Responsibilities -->
+              <div class="form-group">
+                <label for="responsibilities">Responsibilities</label>
+                <textarea id="responsibilities" class="form-control" formControlName="responsibilities" rows="3" placeholder="Enter the Job Responsibilites"></textarea>
+              </div>
+  
+              <!-- Department -->
+              <div class="form-group">
+                <label for="department">Department</label>
+                <select id="department" class="form-control" formControlName="department">
+                  <option value="">Choose department</option>
+                  <option value="HR">HR</option>
+                  <option value="Engineering">Engineering</option>
+                  <option value="Sales">Sales</option>
+                  <option value="Marketing">Marketing</option>
+                </select>
+                <span class="text-danger" *ngIf="jobPostingForm.controls['department'].invalid && (jobPostingForm.controls['department'].dirty || jobPostingForm.controls['department'].touched)">
+                  Please select a department.
+                </span>
+              </div>
+  
+              <!-- Job Location -->
+              <div class="form-group">
+                <label for="jobLocation">Job Location</label>
+                <input type="text" id="jobLocation" class="form-control" formControlName="location" placeholder="Enter Job-Location">
+                <span class="text-danger" *ngIf="jobPostingForm.controls['location'].invalid && (jobPostingForm.controls['location'].dirty || jobPostingForm.controls['location'].touched)">
+                  Job location is required.
+                </span>
+              </div>
+  
+              <!-- Employment Type -->
+              <div class="form-group">
+                <label for="employmentType">Employment Type</label>
+                <select id="employmentType" class="form-control" formControlName="employment_type">
+                  <option value="">Select type</option>
+                  <option value="FULL_TIME">Full-Time</option>
+                  <option value="PART_TIME">Part-Time</option>
+                  <option value="CONTRACT">Contract</option>
+                  <option value="INTERN">Internship</option>
+                </select>
+                <span class="text-danger" *ngIf="jobPostingForm.controls['employment_type'].invalid && (jobPostingForm.controls['employment_type'].dirty || jobPostingForm.controls['employment_type'].touched)">
+                  Please select employment type.
+                </span>
+              </div>
+  
+              <!-- Job Status -->
+              <div class="form-group">
+                <label for="jobStatus">Job Posting Status</label>
+                <select id="jobStatus" class="form-control" formControlName="status">
+                  <option value="">Select status</option>
+                  <option value="ACTIVE">Active</option>
+                  <option value="INACTIVE">Inactive</option>
+                </select>
+                <span class="text-danger" *ngIf="jobPostingForm.controls['status'].invalid && (jobPostingForm.controls['status'].dirty || jobPostingForm.controls['status'].touched)">
+                  Please select a status.
+                </span>
+              </div>
+  
+              <!-- Submit Button -->
+              <div class="form-group">
+                <button type="submit" class="btn btn-danger" [disabled]="jobPostingForm.invalid || jobPostingForm.pristine">Submit</button>
+              </div>
+            </form>
+  
+            <span *ngIf="errorMessage" class="text-danger">{{ errorMessage }}</span>
+            <span *ngIf="successMessage" class="text-success">{{ successMessage }}</span>
+  
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  /* Base Container */
+.container {
+    padding: 20px 20px;
+    
+    border-radius: 12px;
+   
+  }
+  
+  /* Section Title */
+  h3.text-center {
+    font-weight: 700;
+    color: #ff4f4f; /* Softer red for modern look */
+    font-size: 30px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  
+  /* Form Block */
+  .formBlock {
+      background-color: white;
+      padding: 40px 35px;
+      border-radius: 15px;
+      box-shadow: 10px 16px 30px rgba(0, 0, 0, 0.2); /* Soft, deeper shadow for depth */
+      color: #000000;
+      max-width: 550px;
+      margin: 0 auto;
+      width: 100%;
+      transition: all 0.3s ease; /* Smooth transition on hover */
+      border: 5px solid #f1f1f1; /* Smooth transition on hover */
+  }
+  #heading{
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a8a; /* Indigo-800 */
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  /* Form Group Styling */
+  .form-group {
+    margin-bottom: 25px;
+  }
+  
+  /* Label Styling */
+  label {
+    font-weight: 600;
+    color: #444444; /* Lighter label color for a more elegant look */
+    margin-bottom: 10px;
+    display: block;
+    font-size: 16px;
+    font-family: sans-serif;
+  }
+  
+  /* Input, Textarea, Select Styling */
+  input[type="text"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid #9fb7e2;
+    background-color: rgb(244, 247, 248);
+    border-radius: 10px;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out; /* Smooth transition on focus */
+    box-shadow: 5px 8px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Focus States for Inputs */
+  input:focus,
+  textarea:focus,
+  select:focus {
+    border-color: #ff4f4f;
+    box-shadow: 0 0 8px rgba(255, 79, 79, 0.6); /* Glowing red focus */
+    outline: none;
+    background-color: #fff; /* Slight background change for clarity */
+  }
+  
+  /* Button Styling */
+  button[type="submit"] {
+    background-color: #ff4f4f;
+    color: white;
+    border: none;
+    padding: 15px 25px;
+    font-size: 16px;
+    border-radius: 6px;
+    transition: background-color 0.3s, transform 0.3s;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2); /* Deep shadow for the button */
+    width: 100%;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #3eb648;
+    transform: scale(1.05); /* Slight zoom effect on hover */
+  }
+  
+  button[type="submit"]:disabled {
+    
+    background-color: #1953cf;
+    color: white;
+    cursor: not-allowed;
+  }
+  
+  /* Validation Messages */
+  /* Validation Messages */
+  .text-danger {
+    color: #ffffff; /* Dark Red */
+    font-size: 14px;
+    margin-top: 8px;
+    display: block;
+    font-weight: 600;
+  }
+  
+  .text-success {
+    color: #28a745;
+    font-size: 14px;
+    margin-top: 10px;
+    display: block;
+    font-weight: 600;
+  }
+  
+  /* Hover Effect on Form Block */
+  .formBlock:hover {
+    transform: scale(1.02); /* Smooth zoom effect when hovering over the form block */
+  }
+  
+  /* Responsive Design Adjustments */
+  @media (max-width: 768px) {
+    .formBlock {
+      padding: 30px 20px;
+    }
+  
+    h3.text-center {
+      font-size: 26px; /* Slightly smaller text for small screens */
+    }
+  
+    button[type="submit"] {
+      padding: 12px 20px; /* Adjust button size on mobile */
+    }
+  }
+  
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JobpostService } from './jobpost.service';  // Make sure this service exists
+
+@Component({
+  selector: 'app-recjobpost',
+  templateUrl: './recjobpost.component.html',
+  styleUrls: ['./recjobpost.component.css']
+})
+export class RecjobpostComponent implements OnInit {
+  jobPostingForm!: FormGroup;
+  successMessage: string = '';
+  errorMessage: string = '';
+
+  constructor(
+    private fb: FormBuilder,
+    private jobpostService: JobpostService // Ensure you have the service created
+  ) {}
+
+  ngOnInit(): void {
+    this.jobPostingForm = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+      requirements: [''],
+      responsibilities: [''],
+      department: ['', Validators.required],
+      location: ['', Validators.required],
+      employment_type: ['', Validators.required],
+      status: ['', Validators.required]
+    });
+  }
+
+  onSubmit(): void {
+    if (this.jobPostingForm.valid) {
+      this.jobpostService.createJobPost(this.jobPostingForm.value).subscribe(
+        response => {
+          this.successMessage = 'Job posted successfully!';
+          this.errorMessage = '';
+          this.jobPostingForm.reset();
+        },
+        error => {
+          this.errorMessage = 'Error posting job.';
+          this.successMessage = '';
+          console.error(error);
+        }
+      );
+    }
+  }
+}
+-------------------------------------------------------------------------------------
+recprofile component:
+<div class="container py-4">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 col-md-10 col-12">
+  
+        <!-- Recruiter Profile Card -->
+        <div class="card shadow mb-4">
+          <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recruiter Profile</h5>
+            <button class="btn btn-light btn-sm" (click)="toggleEdit()">
+              {{ editMode ? 'Cancel' : 'Edit' }}
+            </button>
+          </div>
+  
+          <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="card-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" formControlName="name" readonly />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">User ID</label>
+                <input type="text" class="form-control" formControlName="userId" readonly />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-control" formControlName="email" readonly />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Username</label>
+                <input type="text" class="form-control" formControlName="username" [readonly]="!editMode" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Address</label>
+                <input type="text" class="form-control" formControlName="address" [readonly]="!editMode" />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Status</label>
+                <select class="form-select" formControlName="status" [disabled]="!editMode">
+                  <option value="Active">Active</option>
+                  <option value="Inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+  
+            <div *ngIf="editMode" class="text-end mt-3">
+              <button type="submit" class="btn btn-success">Save Changes</button>
+            </div>
+          </form>
+        </div>
+  
+        <!-- Job Postings Section -->
+        <div class="card shadow mb-4" >
+          <div class="card-header  text-white d-flex justify-content-between align-items-center" id="postcard">
+            <h5 class="mb-0">My Job Postings</h5>
+            <button class="btn btn-outline-light btn-sm" (click)="navigateToJobPostingPage()">➕ Post New Job</button>
+          </div>
+  
+          <div class="list-group list-group-flush">
+            <div
+              *ngFor="let job of jobPostings"
+              class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center"
+            >
+              <div>
+                <h6 class="fw-bold mb-1">{{ job.title }}</h6>
+                <p class="mb-1 text-muted small">
+                  {{ job.department }} | {{ job.employment_type }} | {{ job.location }}
+                </p>
+                <span
+                  class="badge"
+                  [ngClass]="{
+                    'bg-success': job.status === 'ACTIVE',
+                    'bg-secondary': job.status === 'INACTIVE'
+                  }"
+                >
+                  {{ job.status === 'ACTIVE' ? 'Active' : 'Deactivated' }}
+                </span>
+              </div>
+  
+              <div class="btn-group mt-2 mt-md-0">
+                <button class="btn btn-sm btn-outline-primary" (click)="toggleJobStatus(job)">
+                  {{ job.status === 'ACTIVE' ? 'Deactivate' : 'Inactive' }}
+                </button>
+                <button class="btn btn-sm btn-outline-info" (click)="viewCandidates(job)">
+                  View Candidates
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+  
+.card {
+    border-radius: 12px;
+  }
+  
+  .card-header {
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .bg-gradient-primary {
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+  }
+  
+  .btn + .btn {
+    margin-left: 0.5rem;
+  }
+  #postcard{
+    background: linear-gradient(90deg, #525252 0%, #181818 100%);
+  }
+  
+  @media (max-width: 576px) {
+    .btn-group {
+      flex-direction: column;
+      width: 100%;
+    }
+  
+    .btn-group .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+  
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router, ActivatedRoute } from '@angular/router';
+
+interface JobPosting {
+  id: number;
+  title: string;
+  department: string;
+  employment_type: string;
+  location: string;
+  status: 'ACTIVE' | 'INACTIVE';
+}
+
+@Component({
+  selector: 'app-recprofile',
+  templateUrl: './recprofile.component.html',
+  styleUrls: ['./recprofile.component.css'],
+})
+export class RecprofileComponent implements OnInit {
+  profileForm!: FormGroup;
+  editMode = false;
+
+  recruiter = {
+    name: 'John Doe',
+    email: 'john.doe@company.com',
+    userId: 'HR001',
+    username: 'john.doe',
+    address: '123 Main Street, New York',
+    status: 'Active',
+  };
+
+  jobPostings: JobPosting[] = [
+    {
+      id: 1,
+      title: 'Frontend Developer',
+      department: 'Engineering',
+      employment_type: 'FULL_TIME',
+      location: 'New York',
+      status: 'ACTIVE',
+    },
+    {
+      id: 2,
+      title: 'UX Designer',
+      department: 'Design',
+      employment_type: 'CONTRACT',
+      location: 'Remote',
+      status: 'INACTIVE',
+    },
+  ];
+
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
+
+  ngOnInit(): void {
+    this.profileForm = this.fb.group({
+      name: [{ value: this.recruiter.name, disabled: true }, Validators.required],
+      email: [{ value: this.recruiter.email, disabled: true }, [Validators.required, Validators.email]],
+      userId: [{ value: this.recruiter.userId, disabled: true }, Validators.required],
+      username: [{ value: this.recruiter.username, disabled: !this.editMode }, Validators.required],
+      address: [{ value: this.recruiter.address, disabled: !this.editMode }],
+      status: [{ value: this.recruiter.status, disabled: !this.editMode }],
+    });
+  }
+
+  toggleEdit(): void {
+    this.editMode = !this.editMode;
+    const toggleFields = ['username', 'address', 'status'];
+    toggleFields.forEach(field => {
+      this.profileForm.get(field)?.[this.editMode ? 'enable' : 'disable']();
+    });
+
+    if (!this.editMode) {
+      this.profileForm.patchValue(this.recruiter);
+    }
+  }
+
+  onSubmit(): void {
+    if (this.profileForm.valid) {
+      const updated = this.profileForm.getRawValue();
+      this.recruiter = { ...this.recruiter, ...updated };
+
+      // TODO: Backend API call to update recruiter
+      alert('Profile updated successfully!');
+      this.toggleEdit();
+    }
+  }
+
+  toggleJobStatus(job: JobPosting): void {
+    if (job.status === 'ACTIVE') {
+      const confirmed = confirm(`Are you sure you want to deactivate "${job.title}"?`);
+      if (confirmed) {
+        job.status = 'INACTIVE';
+        // TODO: Backend API call to persist job status update
+        alert(`Job "${job.title}" is now INACTIVE`);
+      }
+    } else {
+      alert('INACTIVE jobs cannot be reactivated.');
+    }
+  }
+
+  navigateToJobPostingPage(): void {
+    this.router.navigate(['/hr/jobpost']);
+  }
+
+  viewCandidates(job: JobPosting): void {
+    this.router.navigate(['/hr/pipeline'], { queryParams: { jobId: job.id } });
+  }
+}
+
+---------------------------------------------------------------------------------------------
+interviewscheduling component:
+<div class="container">
+    <div class="row">
+      <div class="offset-1 col-10">
+        <br />
+        <h3 class="text-center" id="heading">INTERVIEW SCHEDULING</h3>
+        <br />
+  
+        <form [formGroup]="interviewForm" (ngSubmit)="onSubmit()">
+          <!-- Application ID (Read-only) -->
+          <div class="form-group">
+            <label for="application_id">Application ID</label>
+            <input
+              id="application_id"
+              formControlName="application_id"
+              class="form-control"
+              type="number"
+              readonly
+            />
+          </div>
+  
+          <!-- Interview Date and Time -->
+          <div class="form-group">
+            <label for="interview_datetime">Interview Date and Time</label>
+            <input
+              id="interview_datetime"
+              formControlName="interview_datetime"
+              class="form-control"
+              type="datetime-local"
+              [min]="minDateTime"
+            />
+            <div
+              *ngIf="
+                interviewForm.get('interview_datetime')?.hasError('pastDate') &&
+                interviewForm.get('interview_datetime')?.touched
+              "
+              class="text-danger"
+            >
+              Interview date and time must be present or future.
+            </div>
+          </div>
+  
+          <!-- Interview Type -->
+          <div class="form-group">
+            <label for="interview_type">Interview Type</label>
+            <select
+              id="interview_type"
+              formControlName="interview_type"
+              class="form-control"
+            >
+              <option *ngFor="let type of interviewTypes" [value]="type">
+                {{ type }}
+              </option>
+            </select>
+          </div>
+  
+          <!-- Location or Link -->
+          <div class="form-group">
+            <label for="location_or_link">Location or Link</label>
+            <input
+              id="location_or_link"
+              formControlName="location_or_link"
+              class="form-control"
+              type="text"
+            />
+          </div>
+  
+          <!-- Interview Status -->
+          <div class="form-group">
+            <label for="status">Status</label>
+            <select id="status" formControlName="status" class="form-control">
+              <option *ngFor="let status of statuses" [value]="status">
+                {{ status }}
+              </option>
+            </select>
+          </div>
+  
+          <!-- Interviewers -->
+          <div formArrayName="interviewers">
+            <div
+              *ngFor="let interviewer of interviewers.controls; let i = index"
+              [formGroupName]="i"
+              class="form-group"
+            >
+              <label>Interviewer</label>
+              <select
+                formControlName="interviewer_id"
+                class="form-control"
+              >
+                <option
+                  *ngFor="let person of interviewersList"
+                  [value]="person.id"
+                  [disabled]="!isInterviewerAvailable(person.id)"
+                >
+                  {{ person.name }} (ID: {{ person.id }})
+                </option>
+              </select>
+  
+              <button
+                type="button"
+                class="btn btn-danger mt-2"
+                (click)="removeInterviewer(i)"
+                *ngIf="interviewers.length > 1"
+              >
+                Remove Interviewer
+              </button>
+            </div>
+          </div>
+  
+          <div
+            *ngIf="interviewers.errors?.['minInterviewers'] && interviewForm.touched"
+            class="text-danger"
+          >
+            At least one interviewer is required.
+          </div>
+  
+          <button
+            type="button"
+            class="btn btn-primary mt-3"
+            (click)="addInterviewer()"
+          >
+            Add Interviewer
+          </button>
+  
+          <br />
+  
+          <button
+            type="submit"
+            [disabled]="interviewForm.invalid"
+            class="btn btn-success mt-4"
+          >
+            Submit
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  /* ====== Interview Scheduling Form Styles ====== */
+
+.container {
+    padding: 2rem 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    
+    min-height: 100vh;
+  }
+  
+  #heading {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1e3a8a; /* Indigo-800 */
+    text-align: center;
+    margin-bottom: 2.5rem;
+  }
+  
+  form {
+    background-color: #ffffff;
+    max-width: 550px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    transition: box-shadow 0.3s ease;
+    border: 5px solid #f1f1f1;
+  }
+  
+  form:hover {
+    box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+  }
+  
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+  input,select{
+    width: 100%;
+    padding: 15px 18px;
+    border: 2px solid #9fb7e2;
+    background-color: rgb(244, 247, 248);
+    border-radius: 10px;
+    font-size: 16px;
+    color: #333;
+    box-sizing: border-box;
+    transition: all 0.3s ease-in-out; /* Smooth transition on focus */
+    box-shadow: 5px 8px 10px rgba(0, 0, 0, 0.2);
+  }
+  label {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #374151; /* Gray-700 */
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+  
+  input.form-control,
+  select.form-control {
+    width: 100%;
+    font-size: 1rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 8px;
+     /* Gray-300 */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+  }
+  
+  input.form-control:focus,
+  select.form-control:focus {
+    border-color: #2563eb; /* Blue-600 */
+    box-shadow: 0 0 6px rgba(0, 81, 255, 0.4);
+  }
+  
+  .text-danger {
+    color: #dc2626; /* Red-600 */
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+  }
+  
+  button {
+    font-weight: 600;
+    border-radius: 8px;
+    padding: 0.6rem 1.5rem;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+    margin-top: 1rem;
+    display: inline-block;
+  }
+  
+  /* Primary Button */
+  .btn-primary {
+    background-color: #3b82f6; /* Blue-500 */
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #2563eb; /* Blue-600 */
+  }
+  
+  /* Success Button */
+  .btn-success {
+    background-color: #10b981; /* Green-500 */
+    color: white;
+  }
+  
+  .btn-success:hover {
+    background-color: #059669; /* Green-600 */
+  }
+  
+  /* Danger Button */
+  .btn-danger {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .btn-danger:hover {
+    background-color: #b91c1c;
+  }
+  
+  button:disabled,
+  button[disabled] {
+    background-color: #9ca3af; /* Gray-400 */
+    cursor: not-allowed;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    form {
+      padding: 1.5rem 1.25rem;
+    }
+  
+    #heading {
+      font-size: 1.6rem;
+      margin-bottom: 1.75rem;
+    }
+  
+    button {
+      width: 100%;
+    }
+  }
+  
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray, Validators } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-interviewscheduling',
+  templateUrl: './interviewscheduling.component.html',
+  styleUrls: ['./interviewscheduling.component.css'],
+})
+export class InterviewschedulingComponent implements OnInit {
+  interviewForm!: FormGroup;
+  interviewersList = [
+    { id: 1, name: 'Interviewer One' },
+    { id: 2, name: 'Interviewer Two' },
+    { id: 3, name: 'Interviewer Three' }
+  ]; // sample static data
+  unavailableInterviewerIds: number[] = [];
+  minDateTime: string = '';
+
+  interviewTypes = ['PHONE', 'VIDEO', 'IN_PERSON'];
+  statuses = ['SCHEDULED', 'COMPLETED', 'CANCELLED'];
+
+  constructor(private fb: FormBuilder, private route: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    this.minDateTime = new Date().toISOString().slice(0, 16);
+
+    this.interviewForm = this.fb.group({
+      application_id: [''],
+      interview_datetime: ['', Validators.required],
+      interview_type: ['', Validators.required],
+      location_or_link: ['', Validators.required],
+      status: ['', Validators.required],
+      interviewers: this.fb.array([], Validators.minLength(1)),
+    });
+
+    // Static example: no service call
+    // You can later replace this with a service call to fetch real data
+
+    // Example: block interviewer 2 as unavailable for demo
+    this.unavailableInterviewerIds = [2];
+
+    const applicationId = this.route.snapshot.paramMap.get('applicationId');
+    if (applicationId) {
+      this.interviewForm.patchValue({ application_id: Number(applicationId) });
+    }
+
+    this.addInterviewer();
+  }
+
+  get interviewers(): FormArray {
+    return this.interviewForm.get('interviewers') as FormArray;
+  }
+
+  addInterviewer(): void {
+    this.interviewers.push(
+      this.fb.group({
+        interviewer_id: ['', Validators.required],
+      })
+    );
+  }
+
+  removeInterviewer(index: number): void {
+    this.interviewers.removeAt(index);
+  }
+
+  isInterviewerAvailable(interviewerId: number): boolean {
+    return !this.unavailableInterviewerIds.includes(interviewerId);
+  }
+
+  onSubmit(): void {
+    if (this.interviewForm.valid) {
+      console.log('Form submitted:', this.interviewForm.value);
+    } else {
+      this.interviewForm.markAllAsTouched();
+      console.log('Form invalid');
+    }
+  }
+}
+
+---------------------------------------------------------------------
+candidate pipeline:
+<div class="container-fluid mt-4">
+    <form [formGroup]="form">
+      <div class="row flex-nowrap overflow-auto">
+        <div *ngFor="let stage of stages" class="col-sm-3 col-md-2 mx-2" style="min-width: 250px;">
+          <div class="bg-light border rounded p-2 h-100">
+            <h5 class="text-center text-primary">{{ stage }}</h5>
+  
+            <div *ngFor="let candidateCtrl of getCandidatesByStage(stage)" class="card mb-2 shadow-sm"
+              [formGroup]="candidateCtrl">
+              <div class="card-body p-2">
+                <h6 class="card-title mb-1">{{ candidateCtrl.get('name')?.value }}</h6>
+                <p class="card-subtitle text-muted small">
+                  {{ candidateCtrl.get('jobTitle')?.value }}
+                </p>
+  
+                <select class="form-select form-select-sm mt-2" formControlName="status"
+                  (change)="onStatusChange(candidateCtrl)">
+                  <option *ngFor="let s of stages; let i = index" [value]="s"
+                    [disabled]="i < stages.indexOf(candidateCtrl.get('status')?.value)">
+                    {{ s }}
+                  </option>
+                </select>
+  
+                <!-- Schedule Interview button shown in INTERVIEW stage only -->
+                <button *ngIf="stage === 'INTERVIEW'" class="btn btn-sm btn-primary mt-2"
+                  [disabled]="candidateCtrl.get('interviewAssigned')?.value"
+                  (click)="scheduleInterview(candidateCtrl.get('application_id')?.value)">
+                  Schedule Interview
+                </button>
+  
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+/* STAGE container */
+.col-sm-3, .col-md-2 {
+    position: relative;
+    background: linear-gradient(to bottom right, #e0f2fe, #f9fafb);
+    border-left: 4px solid #3b82f6;
+    padding-top: 0.5rem;
+    border-radius: 10px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
+  }
+  
+  /* Color-coded stages (example) */
+  h5.text-center.text-primary::before {
+    content: '';
+    display: inline-block;
+    height: 12px;
+    width: 12px;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: #3b82f6; /* blue default */
+  }
+  h5.text-center.text-primary:has(span.stage-interview)::before {
+    background-color: #facc15; /* amber */
+  }
+  h5.text-center.text-primary:has(span.stage-rejected)::before {
+    background-color: #ef4444; /* red */
+  }
+  
+  /* Status badges */
+  .card-subtitle::after {
+    content: attr(data-status);
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    margin-left: 8px;
+    border-radius: 8px;
+    background-color: #e5e7eb;
+    color: #374151;
+  }
+  
+  /* Smooth card hover */
+  .card {
+    transition: all 0.25s ease-in-out;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Button hover + tooltip */
+  .btn-primary {
+    position: relative;
+  }
+  .btn-primary:hover::after {
+    content: 'Schedule now';
+    position: absolute;
+    top: -28px;
+    left: 0;
+    background: #1e293b;
+    color: #fff;
+    padding: 4px 8px;
+    font-size: 0.7rem;
+    border-radius: 4px;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  
+  /* Scroll edge fade indicator */
+  .row.flex-nowrap::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(to right, transparent, white);
+    pointer-events: none;
+  }
+  
+  /* Mobile tweaks */
+  @media (max-width: 576px) {
+    .card-title {
+      font-size: 0.9rem;
+    }
+  
+    .card-subtitle {
+      font-size: 0.75rem;
+    }
+  
+    .form-select-sm {
+      font-size: 0.8rem;
+    }
+  
+    .btn-primary {
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+    }
+  }
+  select option:disabled {
+    color: #9ca3af; /* Gray-400 */
+    font-style: italic;
+  }
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormArray } from '@angular/forms';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-candidatepipeline',
+  templateUrl: './candidatepipeline.component.html',
+  styleUrls: ['./candidatepipeline.component.css']
+})
+export class CandidatepipelineComponent implements OnInit {
+  form: FormGroup;
+  stages: string[] = ['APPLIED', 'PHONE_SCREEN', 'INTERVIEW', 'OFFER', 'HIRED'];
+
+  constructor(private fb: FormBuilder, private router: Router) {
+    this.form = this.fb.group({
+      candidates: this.fb.array([])
+    });
+  }
+
+  ngOnInit(): void {
+    this.loadSampleCandidates();
+  }
+
+  get candidatesFormArray(): FormArray {
+    return this.form.get('candidates') as FormArray;
+  }
+
+  loadSampleCandidates(): void {
+    const sampleCandidates = [
+      { application_id: 101, name: 'Alice Johnson', jobTitle: 'Software Engineer', status: 'APPLIED' },
+      { application_id: 102, name: 'Bob Smith', jobTitle: 'UI/UX Designer', status: 'PHONE_SCREEN' },
+      { application_id: 103, name: 'Charlie Brown', jobTitle: 'Backend Developer', status: 'INTERVIEW' },
+      { application_id: 104, name: 'Diana Prince', jobTitle: 'DevOps Engineer', status: 'OFFER' },
+      { application_id: 105, name: 'Ethan Hunt', jobTitle: 'Security Analyst', status: 'HIRED' }
+    ];
+
+    const formGroups = sampleCandidates.map(candidate =>
+      this.fb.group({
+        application_id: [candidate.application_id],
+        name: [candidate.name],
+        jobTitle: [candidate.jobTitle],
+        status: [candidate.status],
+        interviewAssigned: [false]  // 👈 Add this control
+      })
+    );
+
+    this.form.setControl('candidates', this.fb.array(formGroups));
+  }
+
+  getCandidatesByStage(stage: string): FormGroup[] {
+    return this.candidatesFormArray.controls
+      .filter(control => control.get('status')?.value === stage) as FormGroup[];
+  }
+
+  onStatusChange(candidateForm: FormGroup): void {
+    const id = candidateForm.get('application_id')?.value;
+    const newStatus = candidateForm.get('status')?.value;
+    const currentStatus = candidateForm.get('status')?.value;
+  
+    // Optional: Prevent invalid back transitions (redundant if you filter options in UI)
+    const currentIndex = this.stages.indexOf(currentStatus);
+    const newIndex = this.stages.indexOf(newStatus);
+  
+    if (newIndex < currentIndex) {
+      console.warn(`Backwards move not allowed for Application ID ${id}`);
+      candidateForm.get('status')?.setValue(currentStatus);
+      return;
+    }
+  
+    console.log(`Status of Application ID ${id} changed to: ${newStatus}`);
+  }
+  
+
+  scheduleInterview(applicationId: number): void {
+    const candidate = this.candidatesFormArray.controls.find(
+      ctrl => ctrl.get('application_id')?.value === applicationId
+    ) as FormGroup;
+
+    if (candidate) {
+      candidate.get('status')?.setValue('INTERVIEW');
+      candidate.get('interviewAssigned')?.setValue(true); // ✅ Mark as assigned
+      this.onStatusChange(candidate);
+    }
+
+    this.router.navigate(['/hr/schedule-interview', applicationId]);
+  }
+}
+
+----------------------------------------------------------------------------------------------------
+afterinterview:
+<div class="container mt-4">
+    <h2 class="text-center text-primary mb-4">Interview Feedback Summary</h2>
+  
+    <!-- Job Role Filter -->
+    <div class="mb-4">
+      <label for="jobRoleFilter" class="form-label fw-semibold">Filter by Job Role:</label>
+      <select id="jobRoleFilter" class="form-select w-50" (change)="onJobRoleSelect($event)">
+        <option value="">All Job Roles</option>
+        <option *ngFor="let role of jobRoles" [value]="role">{{ role }}</option>
+      </select>
+    </div>
+  
+    <!-- Interview List Scrollable Wrapper -->
+    <div class="interview-scroll-wrapper p-3">
+      <div *ngFor="let interview of filteredInterviews" class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span class="fs-5">{{ interview.get('jobRole')?.value }}</span>
+          <span class="badge bg-secondary">{{ interview.get('status')?.value }}</span>
+        </div>
+  
+        <div class="card-body row g-3">
+          <!-- Candidate Details -->
+          <div class="col-md-6">
+            <div class="candidate-section p-3 h-100">
+              <h5 class="text-primary mb-3">Candidate Details</h5>
+              <p><strong>ID:</strong> {{ interview.get('candidate.id')?.value }}</p>
+              <p><strong>Name:</strong> {{ interview.get('candidate.name')?.value }}</p>
+              <p><strong>Feedback:</strong>
+                <span class="feedback-box">{{ interview.get('candidate.feedback')?.value }}</span>
+              </p>
+            </div>
+          </div>
+  
+          <!-- Interviewer Details -->
+          <div class="col-md-6">
+            <div class="interviewer-section p-3 h-100">
+              <h5 class="text-success mb-3">Interviewer Details</h5>
+              <p><strong>ID:</strong> {{ interview.get('interviewer.id')?.value }}</p>
+              <p><strong>Name:</strong> {{ interview.get('interviewer.name')?.value }}</p>
+              <p><strong>Feedback:</strong>
+                <span class="feedback-box">{{ interview.get('interviewer.feedback')?.value }}</span>
+              </p>
+            </div>
+          </div>
+  
+          <!-- Action Buttons -->
+          <div class="col-12 d-flex justify-content-end gap-2 mt-3">
+            <button class="btn btn-outline-danger" (click)="reject(interview)">
+              Reject Candidate
+            </button>
+            <button class="btn btn-outline-success" (click)="moveToNext(interview)">
+              Move to Next Round
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  /* Container Styling */
+.container {
+    max-width: 1100px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Job Role Dropdown */
+.form-select {
+    border: 2px solid #0d6efd;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Scroll Wrapper Styling - limits visible cards to 2 with scrolling */
+.interview-scroll-wrapper {
+    max-height: 440px; /* 2 cards * ~200px height + margins */
+    overflow-y: auto;
+    border: 2px solid #dee2e6;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    padding-right: 10px;
+
+    /* Firefox scrollbar */
+    scrollbar-color: #0d6efd #f1f1f1;
+    scrollbar-width: thin;
+}
+
+/* WebKit Scrollbar */
+.interview-scroll-wrapper::-webkit-scrollbar {
+    width: 10px;
+}
+
+.interview-scroll-wrapper::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.interview-scroll-wrapper::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #0d6efd, #ffffff); /* blue vertical gradient */
+    border-radius: 10px;
+    border: 2px solid #f1f1f1;
+}
+
+/* Card Styling */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #e3e6ea;
+    transition: box-shadow 0.3s ease;
+    margin-bottom: 15px;
+    min-height: 200px; /* fixed height for uniformity */
+    box-sizing: border-box;
+}
+
+.card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Card Header Gradient */
+.card-header {
+    background: linear-gradient(90deg, #0d6efd 0%, #0b5ed7 100%);
+    color: #fff;
+    font-weight: 500;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+/* Sections */
+.candidate-section,
+.interviewer-section {
+    background-color: #fdfdfd;
+    border-left: 5px solid #0d6efd;
+    padding: 16px;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    height: 100%;
+}
+
+/* Interviewer Section Color */
+.interviewer-section {
+    border-left-color: #20c997;
+}
+
+/* Feedback Highlight */
+.feedback-box {
+    display: inline-block;
+    background-color: #e9ecef;
+    color: #212529;
+    font-style: italic;
+    padding: 6px 10px;
+    border-radius: 6px;
+}
+
+/* Buttons Styling */
+.btn-outline-danger:hover {
+    background-color: #dc3545;
+    color: #fff;
+    border-color: #dc3545;
+}
+
+.btn-outline-success:hover {
+    background-color: #198754;
+    color: #fff;
+    border-color: #198754;
+}
+
+/* Status Badge Colors */
+.badge.bg-secondary {
+    background-color: #6c757d !important;
+}
+
+.badge.bg-secondary::first-letter {
+    text-transform: capitalize;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-body {
+        flex-direction: column;
+    }
+    .candidate-section,
+    .interviewer-section {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+
+interface InterviewView {
+  applicationId: number;
+  jobRole: string;
+  candidate: {
+    id: number;
+    name: string;
+    feedback: string;      // feedback from candidate perspective
+  };
+  interviewer: {
+    id: number;
+    name: string;
+    feedback: string;      // interviewer's feedback on candidate
+  };
+  status: string;
+}
+
+@Component({
+  selector: 'app-afterinterview',
+  templateUrl: './afterinterview.component.html',
+  styleUrls: ['./afterinterview.component.css']
+})
+export class AfterinterviewComponent implements OnInit {
+  form!: FormGroup;
+  allInterviews: FormGroup[] = [];
+  filteredInterviews: FormGroup[] = [];
+  jobRoles: string[] = [];
+
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.form = this.fb.group({
+      interviews: this.fb.array([])
+    });
+
+    // Sample interview data including 8 additional entries (total 10)
+    const dataFromDb: InterviewView[] = [
+      {
+        applicationId: 1,
+        jobRole: 'Software Engineer',
+        candidate: { id: 301, name: 'John Doe', feedback: 'Looking forward to the role' },
+        interviewer: { id: 101, name: 'Jane Smith', feedback: 'Strong coding skills, good culture fit' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 2,
+        jobRole: 'QA Engineer',
+        candidate: { id: 302, name: 'Alice Johnson', feedback: 'Excited about automation testing' },
+        interviewer: { id: 102, name: 'Robert Brown', feedback: 'Needs improvement in test case design' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 3,
+        jobRole: 'Data Scientist',
+        candidate: { id: 303, name: 'Michael Lee', feedback: 'Passionate about ML algorithms' },
+        interviewer: { id: 103, name: 'Susan Clark', feedback: 'Good statistical knowledge' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 4,
+        jobRole: 'Product Manager',
+        candidate: { id: 304, name: 'Emma Wilson', feedback: 'Looking to lead cross-functional teams' },
+        interviewer: { id: 104, name: 'David Kim', feedback: 'Strong leadership and communication' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 5,
+        jobRole: 'UX Designer',
+        candidate: { id: 305, name: 'Olivia Martinez', feedback: 'Excited to improve user experience' },
+        interviewer: { id: 105, name: 'Linda Patel', feedback: 'Creative and detail-oriented' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 6,
+        jobRole: 'DevOps Engineer',
+        candidate: { id: 306, name: 'James Anderson', feedback: 'Experienced with cloud infrastructure' },
+        interviewer: { id: 106, name: 'Kevin Turner', feedback: 'Strong automation skills' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 7,
+        jobRole: 'Software Engineer',
+        candidate: { id: 307, name: 'Sophia Thomas', feedback: 'Keen to build scalable apps' },
+        interviewer: { id: 101, name: 'Jane Smith', feedback: 'Good algorithm understanding' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 8,
+        jobRole: 'QA Engineer',
+        candidate: { id: 308, name: 'Daniel White', feedback: 'Interested in performance testing' },
+        interviewer: { id: 102, name: 'Robert Brown', feedback: 'Strong attention to detail' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 9,
+        jobRole: 'Data Scientist',
+        candidate: { id: 309, name: 'Grace Lee', feedback: 'Enjoys working with big data' },
+        interviewer: { id: 103, name: 'Susan Clark', feedback: 'Excellent data analysis skills' },
+        status: 'INTERVIEWED'
+      },
+      {
+        applicationId: 10,
+        jobRole: 'Product Manager',
+        candidate: { id: 310, name: 'Ethan Harris', feedback: 'Driven to deliver impactful products' },
+        interviewer: { id: 104, name: 'David Kim', feedback: 'Strong strategic thinking' },
+        status: 'INTERVIEWED'
+      }
+    ];
+
+    this.jobRoles = [...new Set(dataFromDb.map(d => d.jobRole))];
+
+    const formGroups = dataFromDb.map(d => this.fb.group({
+      applicationId: [d.applicationId],
+      jobRole: [d.jobRole],
+      candidate: this.fb.group({
+        id: [d.candidate.id],
+        name: [d.candidate.name],
+        feedback: [d.candidate.feedback]
+      }),
+      interviewer: this.fb.group({
+        id: [d.interviewer.id],
+        name: [d.interviewer.name],
+        feedback: [d.interviewer.feedback]
+      }),
+      status: [d.status]
+    }));
+
+    this.allInterviews = formGroups;
+    this.filteredInterviews = [...this.allInterviews];
+  }
+
+  onJobRoleSelect(event: Event): void {
+    const selected = (event.target as HTMLSelectElement).value;
+    if (!selected) {
+      this.filteredInterviews = [...this.allInterviews];
+    } else {
+      this.filteredInterviews = this.allInterviews.filter(fg => fg.get('jobRole')?.value === selected);
+    }
+  }
+
+  reject(interview: FormGroup): void {
+    interview.get('status')?.setValue('REJECTED');
+    // TODO: Call your backend API to update status for applicationId = interview.get('applicationId').value
+  }
+
+  moveToNext(interview: FormGroup): void {
+    interview.get('status')?.setValue('NEXT_ROUND');
+    // TODO: Call your backend API to update status
+  }
+}
+--------------------------------------------------------------------------------------------------
+
+app.routing.ts
+
+{
+    path: 'hr',
+    component: HrrecruitercomponentComponent,
+    children: [
+      { path: 'jobpost', component: RecjobpostComponent },
+      { path: 'interviews', component: InterviewschedulingComponent },
+      { path: 'pipeline', component: CandidatepipelineComponent },
+      { path: 'schedule-interview/:applicationId', component: InterviewschedulingComponent },
+      { path: 'profile', component: RecprofileComponent },
+
+      // Add this new route for after interview details
+      { path: 'after-interview', component: AfterinterviewComponent },
+    ]
+  }
