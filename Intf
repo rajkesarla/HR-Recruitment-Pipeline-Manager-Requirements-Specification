@@ -1,3 +1,182 @@
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10 col-12">
+
+      <!-- Interviewer Profile Card -->
+      <div class="card shadow mb-4">
+        <div class="card-header bg-gradient-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Interviewer Profile</h5>
+          <button class="btn btn-light btn-sm" (click)="toggleEdit()">
+            {{ editMode ? 'Cancel' : 'Edit' }}
+          </button>
+        </div>
+
+        <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">User ID</label>
+              <input type="text" class="form-control" formControlName="userId" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Username</label>
+              <input type="text" class="form-control" formControlName="username" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Name</label>
+              <input type="text" class="form-control" formControlName="name" [readonly]="!editMode" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Designation</label>
+              <input type="text" class="form-control" formControlName="designation" [readonly]="!editMode" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="email" [readonly]="!editMode" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Status</label>
+              <select class="form-select" formControlName="status" [disabled]="!editMode">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div *ngIf="editMode" class="text-end mt-3">
+            <button type="submit" class="btn btn-success">Save Changes</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Upcoming Interviews Section -->
+      <div class="card shadow mb-4">
+        <div class="card-header bg-gradient-secondary text-white">
+          <h6 class="mb-0">Upcoming Interviews</h6>
+        </div>
+        <div class="card-body" *ngIf="upcomingInterviews.length; else noInterviews">
+          <div class="list-group">
+            <div *ngFor="let interview of upcomingInterviews"
+                 class="list-group-item d-flex flex-column flex-md-row justify-content-between align-items-start">
+              <div>
+                <h6 class="fw-bold mb-1">{{ interview.candidateName }}</h6>
+                <p class="mb-1 text-muted small">
+                  Role: {{ interview.jobRole }} | Date: {{ interview.date }} | Time: {{ interview.time }}
+                </p>
+              </div>
+              <button class="btn btn-sm btn-outline-primary mt-2 mt-md-0" (click)="giveFeedback(interview)">
+                Give Feedback
+              </button>
+            </div>
+          </div>
+        </div>
+        <ng-template #noInterviews>
+          <div class="text-muted">No upcoming interviews.</div>
+        </ng-template>
+      </div>
+
+    </div>
+  </div>
+</div>
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+
+@Component({
+  selector: 'app-iprofile',
+  templateUrl: './iprofile.component.html',
+  styleUrls: ['./iprofile.component.css']
+})
+export class IprofileComponent implements OnInit {
+  profileForm!: FormGroup;
+  editMode = false;
+
+  upcomingInterviews = [
+    {
+      interviewId: 1,
+      candidateName: 'John Doe',
+      jobRole: 'Frontend Developer',
+      date: '2025-05-30',
+      time: '10:00 AM',
+      applicationId: 101
+    },
+    {
+      interviewId: 2,
+      candidateName: 'Jane Smith',
+      jobRole: 'Backend Developer',
+      date: '2025-06-01',
+      time: '2:00 PM',
+      applicationId: 102
+    }
+  ];
+
+  constructor(private fb: FormBuilder, private router: Router) {}
+
+  ngOnInit(): void {
+    this.profileForm = this.fb.group({
+      userId: [{ value: 'INT-001', disabled: true }],
+      username: [{ value: 'interviewer01', disabled: true }],
+      name: ['Alice Johnson'],
+      designation: ['Senior Developer'],
+      email: ['alice.johnson@example.com'],
+      status: ['Active']
+    });
+
+    this.disableEditFields();
+  }
+
+  toggleEdit(): void {
+    this.editMode = !this.editMode;
+    this.editMode ? this.enableEditFields() : this.disableEditFields();
+  }
+
+  enableEditFields(): void {
+    ['name', 'email', 'designation', 'status'].forEach(field => {
+      this.profileForm.get(field)?.enable();
+    });
+  }
+
+  disableEditFields(): void {
+    ['name', 'email', 'designation', 'status'].forEach(field => {
+      this.profileForm.get(field)?.disable();
+    });
+  }
+
+  onSubmit(): void {
+    if (this.profileForm.valid) {
+      const updatedProfile = this.profileForm.getRawValue();
+      console.log('Updated Profile:', updatedProfile);
+      // TODO: Send to backend API
+      this.toggleEdit();
+    }
+  }
+
+  giveFeedback(interview: any): void {
+    this.router.navigate(['/interviewer/feedback'], {
+      queryParams: {
+        interviewId: interview.interviewId,
+        reviewerId: this.profileForm.getRawValue().userId,
+        applicationId: interview.applicationId
+      }
+    });
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ooooooooooooooooooooooooooooooooooooooooooooo
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
