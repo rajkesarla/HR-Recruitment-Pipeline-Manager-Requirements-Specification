@@ -1,0 +1,61 @@
+component.ts
+import { Component ,OnInit} from '@angular/core';
+import { JobService } from './job.service';
+
+@Component({
+  selector: 'app-joblistings',
+  templateUrl: './joblistings.component.html',
+  styleUrls: ['./joblistings.component.css']
+})
+export class JoblistingsComponent implements OnInit{
+  jobListings: any[] = [];
+
+  constructor(private jobService: JobService) {}
+
+  ngOnInit(): void {
+    this.jobService.getActiveJobs().subscribe({
+      next: (jobs) => this.jobListings = jobs,
+      error: (err) => console.error('Error loading job listings', err)
+    });
+  }
+  }
+
+
+
+service.ts
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable ,BehaviorSubject} from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class JobService {
+
+  private activeJobsUrl = 'http://localhost:8080/job/active';
+  private jobsSubject = new BehaviorSubject<any[]>([]);
+  public jobs$ = this.jobsSubject.asObservable();
+
+  constructor(private http: HttpClient) {
+    this.loadActiveJobs();
+  }
+
+  // Fetch all active jobs and update observable
+  private loadActiveJobs() {
+    this.http.get<any[]>(this.activeJobsUrl).subscribe({
+      next: (jobs) => this.jobsSubject.next(jobs),
+      error: (err) => console.error('Failed to load active jobs', err)
+    });
+  }
+
+  // Used in component to subscribe to job updates
+  getActiveJobs(): Observable<any[]> {
+    return this.jobs$;
+  }
+
+  // Call this after creating a new job
+  refreshJobs() {
+    this.loadActiveJobs();
+  }
+}
