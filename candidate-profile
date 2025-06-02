@@ -1,0 +1,235 @@
+profile.css
+
+
+  /* Container spacing and structure */
+:host {
+  display: block;
+  padding: 2rem;
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Section headings */
+h2 {
+  text-align: center;
+  font-size: 28px;
+  color: #2c3e50;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* Display mode */
+p {
+  font-size: 16px;
+  margin-bottom: 0.5rem;
+  color: #34495e;
+}
+
+/* Labels in edit form */
+.form-label {
+  font-weight: 500;
+  color: #2c3e50;
+}
+
+/* Form fields */
+.form-control {
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 15px;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Form field spacing */
+.mb-3 {
+  margin-bottom: 1.25rem !important;
+}
+
+/* Button styles */
+button {
+  font-weight: 500;
+  font-size: 16px;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.btn-success {
+  background-color: #28a745;
+  border-color: #28a745;
+  color: #fff;
+}
+
+.btn-success:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+
+/* Responsive two-column layout for larger screens */
+@media (min-width: 768px) {
+  form .mb-3 {
+    display: flex;
+    flex-direction: column;
+  }
+
+  form .form-label {
+    margin-bottom: 0.5rem;
+  }
+
+  form .form-control {
+    width: 100%;
+  }
+}
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+
+profile.html
+
+
+  <!-- src/app/profile/profile.component.html -->
+<div *ngIf="!isEditMode">
+  <h2>Your Profile</h2>
+  <p><strong>Candidate ID:</strong> {{ profileForm.value.candidateId }}</p>
+  <p><strong>Name:</strong> {{ profileForm.value.firstName }} {{ profileForm.value.lastName }}</p>
+  <p><strong>Email:</strong> {{ profileForm.value.email }}</p>
+  <p><strong>Date of Birth:</strong> {{ profileForm.value.dateOfBirth }}</p>
+  <p><strong>College:</strong> {{ profileForm.value.collegeName }}</p>
+  <p><strong>10th %:</strong> {{ profileForm.value.tenthPercentage }}</p>
+  <p><strong>12th %:</strong> {{ profileForm.value.twelfthPercentage }}</p>
+  <p><strong>Graduation CGPA:</strong> {{ profileForm.value.graduationCgpa }}</p>
+  <p><strong>Post Graduation CGPA:</strong> {{ profileForm.value.postGraduationCgpa || 'N/A' }}</p>
+  <p><strong>Passed Out Year:</strong> {{ profileForm.value.passedOutYear }}</p>
+  <button (click)="toggleEdit()" class="btn btn-primary">Edit Profile</button>
+</div>
+
+<div *ngIf="isEditMode">
+  <h2>Edit Your Profile</h2>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+    <div class="mb-3">
+      <label for="candidateId" class="form-label">Candidate ID</label>
+      <input id="candidateId" formControlName="candidateId" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="firstName" class="form-label">First Name</label>
+      <input id="firstName" formControlName="firstName" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="lastName" class="form-label">Last Name</label>
+      <input id="lastName" formControlName="lastName" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="email" class="form-label">Email</label>
+      <input id="email" type="email" formControlName="email" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="dateOfBirth" class="form-label">Date of Birth</label>
+      <input id="dateOfBirth" type="date" formControlName="dateOfBirth" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="collegeName" class="form-label">College Name</label>
+      <input id="collegeName" formControlName="collegeName" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="tenthPercentage" class="form-label">10th Percentage</label>
+      <input id="tenthPercentage" type="number" formControlName="tenthPercentage" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="twelfthPercentage" class="form-label">12th Percentage</label>
+      <input id="twelfthPercentage" type="number" formControlName="twelfthPercentage" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="graduationCgpa" class="form-label">Graduation CGPA</label>
+      <input id="graduationCgpa" type="number" step="0.01" formControlName="graduationCgpa" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="postGraduationCgpa" class="form-label">Post Graduation CGPA</label>
+      <input id="postGraduationCgpa" type="number" step="0.01" formControlName="postGraduationCgpa" class="form-control" />
+    </div>
+    <div class="mb-3">
+      <label for="passedOutYear" class="form-label">Passed Out Year</label>
+      <input id="passedOutYear" type="number" formControlName="passedOutYear" class="form-control" />
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+  </form>
+</div>
+
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+profile.ts
+
+
+
+
+  // src/app/profile/profile.component.ts
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ProfileService, CandidateProfile } from '../services/profile.service';
+
+@Component({
+  selector: 'app-profile',
+  templateUrl: './profile.component.html',
+})
+export class ProfileComponent implements OnInit {
+  profileForm: FormGroup;
+  isEditMode = true; // start in edit mode or false based on your app
+  submitted = false;
+
+  constructor(private fb: FormBuilder, private profileService: ProfileService) {
+    this.profileForm = this.fb.group({
+      candidateId: ['', Validators.required],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      dateOfBirth: ['', Validators.required],
+      collegeName: ['', Validators.required],
+      tenthPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      twelfthPercentage: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      graduationCgpa: ['', [Validators.required, Validators.min(0), Validators.max(10)]],
+      postGraduationCgpa: ['', [Validators.min(0), Validators.max(10)]],
+      passedOutYear: ['', [Validators.required, Validators.pattern(/^\d{4}$/)]],
+    });
+  }
+
+  ngOnInit() {
+    const savedProfile = this.profileService.getProfile();
+    if (savedProfile) {
+      this.profileForm.patchValue(savedProfile);
+      this.isEditMode = false;
+    }
+  }
+
+  toggleEdit() {
+    this.isEditMode = !this.isEditMode;
+  }
+
+  onSubmit() {
+    this.submitted = true;
+    if (this.profileForm.valid) {
+      const profileData: CandidateProfile = this.profileForm.value;
+      this.profileService.setProfile(profileData);
+      this.isEditMode = false;
+      alert('Profile saved!');
+    }
+  }
+}
