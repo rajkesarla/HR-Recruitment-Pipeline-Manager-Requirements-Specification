@@ -59,3 +59,54 @@ export class JobService {
     this.loadActiveJobs();
   }
 }
+
+html file
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">Active Job Listings</h2>
+  
+    <!-- Show message if no jobs -->
+    <div *ngIf="jobListings.length === 0" class="alert alert-warning text-center">
+      No active job postings found.
+    </div>
+  
+    <!-- Job cards -->
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" *ngIf="jobListings.length > 0">
+      <div class="col" *ngFor="let job of jobListings">
+        <div class="card h-100 shadow-sm">
+          <div class="card-body">
+            <h5 class="card-title">{{ job.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">
+              {{ job.department }} | {{ job.location }}
+            </h6>
+  
+            <p class="card-text"><strong>Description:</strong> {{ job.description }}</p>
+  
+            <div *ngIf="job.requirements">
+              <p><strong>Requirements:</strong> {{ job.requirements }}</p>
+            </div>
+  
+            <div *ngIf="job.responsibilities">
+              <p><strong>Responsibilities:</strong> {{ job.responsibilities }}</p>
+            </div>
+  
+            <p><strong>Employment Type:</strong> {{ job.employmentType }}</p>
+            <p><strong>Status:</strong> 
+              <span class="badge bg-success" *ngIf="job.status === 'ACTIVE'">Active</span>
+              <span class="badge bg-secondary" *ngIf="job.status !== 'ACTIVE'">{{ job.status }}</span>
+            </p>
+          </div>
+
+           <!-- Apply Now Button -->
+  <div class="text-end mt-3">
+    <button class="btn apply-btn">Apply Now</button>
+  </div>
+          <div class="card-footer text-muted small">
+            <!-- Posted by: {{ job.created_by || 'Unknown' }} <br> -->
+            Date: {{ job.createdAt | date:'medium' }}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
