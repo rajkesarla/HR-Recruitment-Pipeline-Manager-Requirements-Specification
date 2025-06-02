@@ -233,3 +233,43 @@ export class ProfileComponent implements OnInit {
     }
   }
 }
+
+
+
+------------------------------------------------------------------------------------
+profile service.ts
+
+
+// src/app/services/profile.service.ts
+import { Injectable } from '@angular/core';
+
+export interface CandidateProfile {
+  candidateId: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  dateOfBirth: string;
+  collegeName: string;
+  tenthPercentage: number;
+  twelfthPercentage: number;
+  graduationCgpa: number;
+  postGraduationCgpa?: number;
+  passedOutYear: number;
+}
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ProfileService {
+  private profileData: CandidateProfile | null = null;
+
+  setProfile(profile: CandidateProfile) {
+    this.profileData = profile;
+  }
+
+  getProfile(): CandidateProfile | null {
+    return this.profileData;
+  }
+}
+
+
