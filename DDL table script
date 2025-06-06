@@ -174,3 +174,14 @@ CREATE TABLE application_status_history (
     FOREIGN KEY (application_id) REFERENCES applications(application_id),
     FOREIGN KEY (changed_by) REFERENCES users(user_id)
 );
+
+
+candidate table modified
+
+ALTER TABLE candidates
+  ADD COLUMN fullname VARCHAR(100) AFTER user_id,
+  ADD COLUMN lastname VARCHAR(100) AFTER fullname,
+  ADD COLUMN email VARCHAR(150) UNIQUE DEFAULT NULL AFTER lastname,
+  ADD COLUMN address VARCHAR(255) DEFAULT NULL AFTER email,
+  ADD COLUMN collegename VARCHAR(150) DEFAULT NULL AFTER address;
+
